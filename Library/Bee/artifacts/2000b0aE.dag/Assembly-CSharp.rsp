@@ -542,6 +542,7 @@
 "Assets/HttpServices/Service/Unity/UnityHttpRequest.cs"
 "Assets/HttpServices/Service/Unity/UnityHttpService.cs"
 "Assets/Scripts/APIs/SocketIOManager.cs"
+"Assets/Scripts/Functionality/AudioController.cs"
 "Assets/Scripts/Functionality/BonusLevelCalculation.cs"
 "Assets/Scripts/Functionality/PayoutCalculation.cs"
 "Assets/Scripts/Functionality/SlotBehaviour.cs"

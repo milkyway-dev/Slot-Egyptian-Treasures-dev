@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [Header("Menu UI")]
     [SerializeField]
     private Button Info_Button;
+    [SerializeField] private Button SoundButton;
 
     [Header("Popus UI")]
     [SerializeField]
@@ -36,6 +37,10 @@ public class UIManager : MonoBehaviour
     private Sprite[] Info_Sprites;
     private int paginationCounter = 1;
 
+    private bool isSOundOn=true;
+
+    [SerializeField] private AudioController audioController;
+
 
     private void Start()
     {
@@ -57,24 +62,36 @@ public class UIManager : MonoBehaviour
         if (Previous_Button) Previous_Button.interactable = false;
 
         if (Pagination_Text) Pagination_Text.text = paginationCounter + "  3";
+
+        if (SoundButton) SoundButton.onClick.RemoveAllListeners();
+        if (SoundButton) SoundButton.onClick.AddListener(ToggleSound);
     }
 
+    void ToggleSound() {
+        isSOundOn =!isSOundOn;
+        audioController.ToggleMute(isSOundOn);
+    }
 
     private void OpenPopup(GameObject Popup)
     {
+        if (audioController) audioController.PlayButtonAudio();
         if (Popup) Popup.SetActive(true);
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
     }
 
     private void ClosePopup(GameObject Popup)
     {
+        if (audioController) audioController.PlayButtonAudio();
+
         if (Popup) Popup.SetActive(false);
         if (MainPopup_Object) MainPopup_Object.SetActive(false);
     }
 
     private void TurnPage(bool type)
     {
-        if(type)
+        if (audioController) audioController.PlayButtonAudio();
+
+        if (type)
         {
             if (Previous_Button) Previous_Button.interactable = true;
             paginationCounter++;

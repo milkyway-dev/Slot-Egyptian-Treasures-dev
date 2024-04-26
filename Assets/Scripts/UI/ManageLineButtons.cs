@@ -26,7 +26,6 @@ public class ManageLineButtons : MonoBehaviour, IPointerEnterHandler,IPointerExi
 		//{
 		if (isEnabled)
 		{
-			payManager.ResetLines();
 			if (_ConnectedLine) _ConnectedLine.SetActive(true);
 		}
         //}

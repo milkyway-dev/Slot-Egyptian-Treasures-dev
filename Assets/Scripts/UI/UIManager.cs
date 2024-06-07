@@ -20,6 +20,12 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private GameObject MainPopup_Object;
 
+    [Header("Win Popup")]
+    [SerializeField]
+    private GameObject WinPopup_Object;
+    [SerializeField]
+    private TMP_Text Win_Text;
+
     [Header("Paytable Popup")]
     [SerializeField]
     private GameObject PaytablePopup_Object;
@@ -36,6 +42,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Sprite[] Info_Sprites;
     private int paginationCounter = 1;
+    [SerializeField]
+    private TMP_Text[] SymbolsText;
 
     private bool isSOundOn=true;
 
@@ -65,6 +73,25 @@ public class UIManager : MonoBehaviour
 
         if (SoundButton) SoundButton.onClick.RemoveAllListeners();
         if (SoundButton) SoundButton.onClick.AddListener(ToggleSound);
+    }
+
+    internal void PopulateWin(double amount)
+    {
+        int initAmount = 0;
+        if (WinPopup_Object) WinPopup_Object.SetActive(true);
+        if (MainPopup_Object) MainPopup_Object.SetActive(true);
+
+        DOTween.To(() => initAmount, (val) => initAmount = val, (int)amount, 5f).OnUpdate(() =>
+        {
+            if (Win_Text) Win_Text.text = initAmount.ToString();
+        });
+
+        DOVirtual.DelayedCall(6f, () =>
+        {
+            if (WinPopup_Object) WinPopup_Object.SetActive(false);
+            if (MainPopup_Object) MainPopup_Object.SetActive(false);
+            //slotManager.CheckBonusGame();
+        });
     }
 
     void ToggleSound() {
@@ -114,5 +141,43 @@ public class UIManager : MonoBehaviour
             }
             if (Pagination_Text) Pagination_Text.text = paginationCounter + "  3";
         }
+    }
+    internal void InitialiseUIData(string SupportUrl, string AbtImgUrl, string TermsUrl, string PrivacyUrl, Paylines symbolsText)
+    {
+        PopulateSymbolsPayout(symbolsText);
+    }
+
+
+    private void PopulateSymbolsPayout(Paylines paylines)
+    {
+        for (int i = 0; i < paylines.symbols.Count; i++)
+        {
+            if (i < SymbolsText.Length)
+            {
+                string text = null;
+                if (paylines.symbols[i].multiplier._5x != 0)
+                {
+                    text += paylines.symbols[i].multiplier._5x;
+                }
+                if (paylines.symbols[i].multiplier._4x != 0)
+                {
+                    text += "\n" + paylines.symbols[i].multiplier._4x;
+                }
+                if (paylines.symbols[i].multiplier._3x != 0)
+                {
+                    text += "\n" + paylines.symbols[i].multiplier._3x;
+                }
+                if (paylines.symbols[i].multiplier._2x != 0)
+                {
+                    text += "\n" + paylines.symbols[i].multiplier._2x;
+                }
+                if (SymbolsText[i]) SymbolsText[i].text = text;
+            }
+        }
+    }
+
+    private void CallOnExitFunction()
+    {
+        Application.ExternalCall("window.parent.postMessage", "onExit", "*");
     }
 }

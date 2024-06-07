@@ -3876,6 +3876,8 @@ MonoBehaviour:
   Info_Button: {fileID: 118010252}
   SoundButton: {fileID: 1620192483}
   MainPopup_Object: {fileID: 1643718612}
+  WinPopup_Object: {fileID: 0}
+  Win_Text: {fileID: 0}
   PaytablePopup_Object: {fileID: 1023456358}
   PaytableExit_Button: {fileID: 990849630}
   Next_Button: {fileID: 1683486616}
@@ -3886,6 +3888,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: be1a77a466d9342a4bda6de5255e883b, type: 3}
   - {fileID: 21300000, guid: a16db335d17a14087a84fc5522a55c98, type: 3}
   - {fileID: 21300000, guid: 6fedbbc13874144248eb4354b1dcc334, type: 3}
+  SymbolsText: []
   audioController: {fileID: 4327319551677706936}
 --- !u!1 &379373850
 GameObject:
@@ -5004,8 +5007,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotManager: {fileID: 2046803210}
-  myJsonFile: {fileID: 4900000, guid: 90908d08c2c7d4bc09e4cb8040e2d6dd, type: 3}
-  ResultJsonFile: {fileID: 4900000, guid: c2929104e256c4777b57cec902093bfd, type: 3}
+  bonusdata: []
 --- !u!1 &502968745
 GameObject:
   m_ObjectHideFlags: 0
@@ -10279,7 +10281,28 @@ MonoBehaviour:
   - {fileID: 439865979}
   - {fileID: 759712696}
   - {fileID: 1947168357}
-  InitialLinePosition: {x: -410, y: 180}
+  left_buttons:
+  - {fileID: 657469316}
+  - {fileID: 2083325438}
+  - {fileID: 1813791461}
+  - {fileID: 1951510022}
+  - {fileID: 248030857}
+  - {fileID: 1606828680}
+  - {fileID: 1806081575}
+  - {fileID: 5561146}
+  - {fileID: 1067827187}
+  - {fileID: 1194156108}
+  right_buttons:
+  - {fileID: 65013028}
+  - {fileID: 1559159216}
+  - {fileID: 1905364932}
+  - {fileID: 1082791333}
+  - {fileID: 1799114236}
+  - {fileID: 2080636221}
+  - {fileID: 1216049030}
+  - {fileID: 2099480444}
+  - {fileID: 1893109515}
+  - {fileID: 1954979089}
 --- !u!4 &963807278
 Transform:
   m_ObjectHideFlags: 0
@@ -24925,18 +24948,20 @@ MonoBehaviour:
   UppeLogo2_Anim: {fileID: 438608899}
   Lines_num: 14000000050000000a0000000f000000
   Lines_Button: {fileID: 1443994261}
-  Balance_text: {fileID: 0}
-  TotalBet_text: {fileID: 0}
+  Balance_text: {fileID: 480654471}
+  TotalBet_text: {fileID: 1568883501}
   Lines_text: {fileID: 1567690021}
   TotalWin_text: {fileID: 576684260}
-  AutoSpin_Button: {fileID: 0}
+  AutoSpin_Button: {fileID: 1825438410}
   MaxBet_Button: {fileID: 0}
+  Betone_button: {fileID: 1578118707}
   Image_Prefab: {fileID: 595047196131445314, guid: 04c659a2f5ec249f5be006eb52752781, type: 3}
   PayCalculator: {fileID: 963807277}
   TempList: []
   IconSizeFactor: 241
   verticalVisibility: 3
   SocketManager: {fileID: 500036492}
+  uiManager: {fileID: 377874625}
   Box_Sprites:
   - {fileID: 21300000, guid: 6f8bf2615d2a240a4b1267ede6a90743, type: 3}
   - {fileID: 21300000, guid: 707a72417c0134cd39c2240638290763, type: 3}

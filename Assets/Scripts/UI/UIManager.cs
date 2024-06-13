@@ -15,6 +15,7 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Button Info_Button;
     [SerializeField] private Button SoundButton;
+    [SerializeField] private Button exit_button;
 
     [Header("Popus UI")]
     [SerializeField]
@@ -42,12 +43,14 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Sprite[] Info_Sprites;
     private int paginationCounter = 1;
-    [SerializeField]
-    private TMP_Text[] SymbolsText;
+    [SerializeField] private GameObject[] pageList;
+    [SerializeField] private TMP_Text[] SymbolsText;
+    [SerializeField] private TMP_Text[] SpecialSymbolsText;
 
     private bool isSOundOn=true;
 
     [SerializeField] private AudioController audioController;
+    [SerializeField] private SlotBehaviour slotBehaviour;
 
 
     private void Start()
@@ -73,6 +76,9 @@ public class UIManager : MonoBehaviour
 
         if (SoundButton) SoundButton.onClick.RemoveAllListeners();
         if (SoundButton) SoundButton.onClick.AddListener(ToggleSound);
+
+        if (exit_button) exit_button.onClick.RemoveAllListeners();
+        if (exit_button) exit_button.onClick.AddListener(CallOnExitFunction);
     }
 
     internal void PopulateWin(double amount)
@@ -117,12 +123,16 @@ public class UIManager : MonoBehaviour
     private void TurnPage(bool type)
     {
         if (audioController) audioController.PlayButtonAudio();
-
+        for (int i = 0; i < pageList.Length; i++)
+        {
+            pageList[i].SetActive(false);
+        }
         if (type)
         {
             if (Previous_Button) Previous_Button.interactable = true;
             paginationCounter++;
-            if (Info_Image) Info_Image.sprite = Info_Sprites[paginationCounter - 1];
+            //if (Info_Image) Info_Image.sprite = Info_Sprites[paginationCounter - 1];
+            pageList[paginationCounter-1].SetActive(true);
             if(paginationCounter == 3)
             {
                 if (Next_Button) Next_Button.interactable = false;
@@ -134,7 +144,9 @@ public class UIManager : MonoBehaviour
         {
             if (Next_Button) Next_Button.interactable = true;
             paginationCounter--;
-            if (Info_Image) Info_Image.sprite = Info_Sprites[paginationCounter - 1];
+            pageList[paginationCounter - 1].SetActive(true);
+
+            //if (Info_Image) Info_Image.sprite = Info_Sprites[paginationCounter - 1];
             if (paginationCounter == 1)
             {
                 if (Previous_Button) Previous_Button.interactable = false;
@@ -142,11 +154,19 @@ public class UIManager : MonoBehaviour
             if (Pagination_Text) Pagination_Text.text = paginationCounter + "  3";
         }
     }
-    internal void InitialiseUIData(string SupportUrl, string AbtImgUrl, string TermsUrl, string PrivacyUrl, Paylines symbolsText)
+    internal void InitialiseUIData(string SupportUrl, string AbtImgUrl, string TermsUrl, string PrivacyUrl, Paylines symbolsText, List<string> Specialsymbols)
     {
         PopulateSymbolsPayout(symbolsText);
+        PopulateSpecialSymbols(Specialsymbols);
     }
 
+    private void PopulateSpecialSymbols(List<string> Specialtext)
+    {
+        for (int i = 0; i < SpecialSymbolsText.Length; i++)
+        {
+            if (SpecialSymbolsText[i]) SpecialSymbolsText[i].text = Specialtext[i];
+        }
+    }
 
     private void PopulateSymbolsPayout(Paylines paylines)
     {
@@ -157,19 +177,19 @@ public class UIManager : MonoBehaviour
                 string text = null;
                 if (paylines.symbols[i].multiplier._5x != 0)
                 {
-                    text += paylines.symbols[i].multiplier._5x;
+                    text += "5x -"+paylines.symbols[i].multiplier._5x;
                 }
                 if (paylines.symbols[i].multiplier._4x != 0)
                 {
-                    text += "\n" + paylines.symbols[i].multiplier._4x;
+                    text += "\n" +"4x -" +paylines.symbols[i].multiplier._4x;
                 }
                 if (paylines.symbols[i].multiplier._3x != 0)
                 {
-                    text += "\n" + paylines.symbols[i].multiplier._3x;
+                    text += "\n" + "3x -"+paylines.symbols[i].multiplier._3x;
                 }
                 if (paylines.symbols[i].multiplier._2x != 0)
                 {
-                    text += "\n" + paylines.symbols[i].multiplier._2x;
+                    text += "\n" + "2x -"+paylines.symbols[i].multiplier._2x;
                 }
                 if (SymbolsText[i]) SymbolsText[i].text = text;
             }
@@ -178,6 +198,7 @@ public class UIManager : MonoBehaviour
 
     private void CallOnExitFunction()
     {
+        slotBehaviour.CallCloseSocket();
         Application.ExternalCall("window.parent.postMessage", "onExit", "*");
     }
 }

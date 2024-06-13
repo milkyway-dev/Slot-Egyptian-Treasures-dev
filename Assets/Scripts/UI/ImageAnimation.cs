@@ -36,12 +36,16 @@ public class ImageAnimation : MonoBehaviour
 
 	public bool StartOnAwake = false;
 
+
+
 	private void Awake()
 	{
 		if (Instance == null)
 		{
 			Instance = this;
 		}
+
+		
 	}
 
 	private void OnEnable()
@@ -110,6 +114,7 @@ public class ImageAnimation : MonoBehaviour
 	{
 		if (currentAnimationState != 0)
 		{
+
 			rendererDelegate.sprite = textureArray[0];
 			CancelInvoke("AnimationProcess");
 			currentAnimationState = ImageState.NONE;

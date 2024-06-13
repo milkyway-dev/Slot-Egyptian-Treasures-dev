@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 
 public class BonusLevelCalculation : MonoBehaviour
 {
     [SerializeField]
     private GameObject[] Prize_Columns;
     [SerializeField]
-    private GameObject[] Prize_Texts;
-    [SerializeField]
-    private GameObject[] Prize_Dangers;
+    private TMP_Text[] Prize_Texts;
     [SerializeField]
     private Button[] Prize_Buttons;
     [SerializeField]
@@ -25,21 +24,26 @@ public class BonusLevelCalculation : MonoBehaviour
     [SerializeField]
     private GameObject SunLogoFadeOut;
     [SerializeField]
-    private GameObject Multiplier_Object;
-    [SerializeField]
-    private Image Multiplier_Image;
-    [SerializeField]
-    private Sprite[] Multiplier_Sprites;
-
+    private Sprite[] Initial_Sprites;
+    [SerializeField] private Sprite GameOverSPrite;
+    [SerializeField] private TMP_Text totalWinText;
+    [SerializeField] private TMP_Text multiplierText;
+    [SerializeField] private GameObject bonusGame;
+    [SerializeField] private SlotBehaviour slotBehaviour;
     private int arrowNum = 2;
     private int boxesOpened = 0;
-    private int multiplier = 0;
+    private float multiplier = 0;
+    private int currentbet;
 
     Coroutine SunRoutine = null;
 
+    [SerializeField] private List<int> rusult_num;
+    internal bool gameOn;
+
+
     private void Start()
     {
-        for(int i = 8; i > 4; i--)
+        for (int i = 8; i > 4; i--)
         {
             if (Prize_Buttons[i]) Prize_Buttons[i].interactable = true;
         }
@@ -49,13 +53,11 @@ public class BonusLevelCalculation : MonoBehaviour
         if (SunLogoNormal) SunLogoNormal.SetActive(true);
         if (SunLogoFadeOut) SunLogoFadeOut.SetActive(false);
         if (SunLogoFadeIn) SunLogoFadeIn.SetActive(false);
-        if (Multiplier_Object) Multiplier_Object.SetActive(false);
-        if (Multiplier_Image) Multiplier_Image.sprite = Multiplier_Sprites[0];
     }
 
     private void OnEnable()
     {
-        if(SunRoutine != null)
+        if (SunRoutine != null)
         {
             StopCoroutine(SunRoutine);
             SunRoutine = null;
@@ -69,11 +71,11 @@ public class BonusLevelCalculation : MonoBehaviour
         while (true)
         {
             isSun = !isSun;
-            if(isSun)
+            if (isSun)
             {
                 if (SunLogoNormal) SunLogoNormal.SetActive(false);
                 if (SunLogoFadeOut) SunLogoFadeOut.SetActive(true);
-                if (Multiplier_Object) Multiplier_Object.SetActive(true);
+                if (multiplierText) multiplierText.gameObject.SetActive(true);
                 yield return new WaitForSeconds(0.3f);
                 if (SunLogoFadeOut) SunLogoFadeOut.SetActive(false);
             }
@@ -81,7 +83,7 @@ public class BonusLevelCalculation : MonoBehaviour
             {
                 if (SunLogoFadeIn) SunLogoFadeIn.SetActive(true);
                 yield return new WaitForSeconds(0.3f);
-                if (Multiplier_Object) Multiplier_Object.SetActive(false);
+                if (multiplierText) multiplierText.gameObject.SetActive(true);
                 if (SunLogoFadeIn) SunLogoFadeIn.SetActive(false);
                 if (SunLogoNormal) SunLogoNormal.SetActive(true);
             }
@@ -89,16 +91,75 @@ public class BonusLevelCalculation : MonoBehaviour
         }
     }
 
+    internal void startGame(List<int> result, int currenBet)
+    {
+        slotBehaviour.CheckPopups = true;
+
+
+        rusult_num.Clear();
+        currentbet = currenBet;
+        for (int i = 0; i < result.Count; i++)
+        {
+            if (result[i] != -1)
+                rusult_num.Add(result[i]);
+        }
+
+        rusult_num.Add(-1);
+        gameOn = true;
+        bonusGame.SetActive(true);
+        for (int i = 8; i > 4; i--)
+        {
+            if (Prize_Buttons[i]) Prize_Buttons[i].interactable = true;
+        }
+        if (LeftArr_Objects[arrowNum]) LeftArr_Objects[arrowNum].SetActive(true);
+        if (RightArr_Objects[arrowNum]) RightArr_Objects[arrowNum].SetActive(true);
+
+        if (SunLogoNormal) SunLogoNormal.SetActive(true);
+        if (SunLogoFadeOut) SunLogoFadeOut.SetActive(false);
+        if (SunLogoFadeIn) SunLogoFadeIn.SetActive(false);
+
+
+    }
     public void CheckBox(int num)
     {
+        if (!gameOn)
+            return;
+
         if (Prize_Columns[num]) Prize_Columns[num].GetComponent<ImageAnimation>().StartAnimation();
         if (Prize_Buttons[num]) Prize_Buttons[num].interactable = false;
         DOVirtual.DelayedCall(0.5f, () =>
         {
-            if (Prize_Columns[num]) Prize_Columns[num].SetActive(false);
-            if (Prize_Texts[num]) Prize_Texts[num].SetActive(true);
+            
+            if (rusult_num[boxesOpened] != -1) {
+
+                if (Prize_Columns[num]) Prize_Columns[num].SetActive(false);
+                Prize_Texts[num].text = rusult_num[boxesOpened].ToString();
+                Prize_Texts[num].gameObject.SetActive(true);
+                totalWinText.text = (int.Parse(totalWinText.text) + rusult_num[boxesOpened]).ToString();
+                if (currentbet != 0)
+                    multiplier = float.Parse(totalWinText.text) / (float)currentbet;
+                    multiplierText.text="X"+ multiplier+"\n"+"MULTIPLIED";
+            }
+            else {
+
+                Prize_Columns[num].SetActive(true);
+                Prize_Columns[num].GetComponent<Image>().sprite = GameOverSPrite;
+                Prize_Texts[num].text = "Game Over";
+            }
+
+            
+            if (rusult_num[boxesOpened] == -1)
+            {
+
+                foreach (var item in Prize_Buttons)
+                {
+                    item.interactable = false;
+                }
+                gameOn = false;
+                Invoke("GameOver", 1.75f);
+            }
             boxesOpened++;
-            if (boxesOpened == 3)
+            if (boxesOpened == 1)
             {
                 for (int i = 8; i > 4; i--)
                 {
@@ -106,7 +167,7 @@ public class BonusLevelCalculation : MonoBehaviour
                 }
                 NextLineUp(1);
             }
-            else if(boxesOpened == 5)
+            else if (boxesOpened == 2)
             {
                 for (int i = 4; i > 1; i--)
                 {
@@ -114,18 +175,13 @@ public class BonusLevelCalculation : MonoBehaviour
                 }
                 NextLineUp(0);
             }
-            else if(boxesOpened == 6)
-            {
-                multiplier++;
-                if (Multiplier_Image) Multiplier_Image.sprite = Multiplier_Sprites[multiplier];
-                //close the game
-            }
+
         });
     }
 
     private void NextLineUp(int line)
     {
-        if(line == 1)
+        if (line == 1)
         {
             for (int i = 4; i > 1; i--)
             {
@@ -144,8 +200,6 @@ public class BonusLevelCalculation : MonoBehaviour
         arrowNum--;
         if (LeftArr_Objects[arrowNum]) LeftArr_Objects[arrowNum].SetActive(true);
         if (RightArr_Objects[arrowNum]) RightArr_Objects[arrowNum].SetActive(true);
-        multiplier++;
-        if (Multiplier_Image) Multiplier_Image.sprite = Multiplier_Sprites[multiplier];
     }
 
     private void OnDisable()
@@ -155,5 +209,36 @@ public class BonusLevelCalculation : MonoBehaviour
             StopCoroutine(SunRoutine);
             SunRoutine = null;
         }
+    }
+
+    void GameOver()
+    {
+        totalWinText.text = "0";
+        arrowNum = 2;
+        multiplierText.text = "X 0"+ "\n" + "MULTIPLIED";
+        for (int i = 0; i < Prize_Columns.Length; i++)
+        {
+            Prize_Columns[i].SetActive(true);
+            ImageAnimation temp = Prize_Columns[i].GetComponent<ImageAnimation>();
+            temp.StopAnimation();
+            temp.rendererDelegate.sprite = Initial_Sprites[i];
+            Prize_Texts[i].gameObject.SetActive(false);
+            Prize_Buttons[i].interactable = false;
+            if (i > 4)
+                Prize_Buttons[i].interactable = true;
+        }
+
+        for (int i = 0; i < LeftArr_Objects.Length; i++)
+        {
+            LeftArr_Objects[i].SetActive(false);
+            RightArr_Objects[i].SetActive(false);
+        }
+        if (LeftArr_Objects[arrowNum]) LeftArr_Objects[arrowNum].SetActive(true);
+        if (RightArr_Objects[arrowNum]) RightArr_Objects[arrowNum].SetActive(true);
+        boxesOpened = 0;
+        bonusGame.SetActive(false);
+        slotBehaviour.CheckPopups = false;
+
+
     }
 }

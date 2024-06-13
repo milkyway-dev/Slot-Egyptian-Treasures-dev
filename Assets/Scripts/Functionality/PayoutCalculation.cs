@@ -17,67 +17,121 @@ public class PayoutCalculation : MonoBehaviour
     [SerializeField]
     private GameObject[] Lines_Object;
 
+    [SerializeField] private TMP_Text line_text;
     internal int LineCount;
 
     internal int currrentLineIndex;
 
-    internal List<int> DontDestroy = new List<int>();
+    [SerializeField] internal List<int> DontDestroy = new List<int>();
+    [SerializeField] internal List<int> LineList;
 
-    [SerializeField] private Button[] left_buttons;
-    [SerializeField] private Button[] right_buttons;
+    [SerializeField] private Button[] buttons;
+    //[SerializeField] private Button[] right_buttons;
+    [SerializeField] internal List<int> DontDestroyLines = new List<int>();
 
     GameObject TempObj = null;
+    [SerializeField]internal int currentLineIndex;
+
+    internal int CurrentLines;
+    internal int LineIndex;
+
 
     private void Awake()
     {
         LineCount = Lines_Object.Length;
     }
-
-    internal void GeneratePayoutLinesBackend(int lineIndex = -1, int linecounter = 0, bool isStatic = false)
+    private void Start()
     {
-        ResetLines();
-        if (lineIndex >= 0)
-        {
-            if (Lines_Object[lineIndex]) Lines_Object[lineIndex].SetActive(true);
-            return;
-        }
+        CurrentLines = LineList[LineList.Count - 1];
+        LineIndex = LineList.Count - 1;
 
-        if (isStatic)
-        {
-            TempObj = Lines_Object[lineIndex];
-        }
-        for (int i = 0; i < linecounter; i++)
-        {
-            Lines_Object[i].SetActive(true);
-        }
+        currentLineIndex = LineList.Count - 1;
+        //inActiveLineButtons[LineIndex].SetActive(false);
+        //activeLineButtons[LineIndex].SetActive(true);
     }
-
-    //internal void SetButtonActive(int LineCounter)
+    //internal void GeneratePayoutLinesBackend(int lineIndex = -1, int linecounter = 0, bool isStatic = false)
     //{
-    //    currrentLineIndex = LineCounter;
-
-    //    for (int i = 0; i < LineCounter; i++)
+    //    ResetLines();
+    //    if (lineIndex >= 0)
     //    {
-    //        Lines_Object[i].SetActive(true);
-
-    //        left_buttons[i].interactable = true;
-    //        right_buttons[i].interactable = true;
+    //        if (Lines_Object[lineIndex]) Lines_Object[lineIndex].SetActive(true);
+    //        return;
     //    }
 
-
-    //    for (int j = LineCounter; j < left_buttons.Length; j++)
+    //    if (isStatic)
     //    {
-    //        left_buttons[j].interactable = false;
-    //        right_buttons[j].interactable = false;
+    //        TempObj = Lines_Object[lineIndex];
+    //    }
+    //    for (int i = 0; i < linecounter; i++)
+    //    {
+    //        Lines_Object[i].SetActive(true);
     //    }
     //}
 
+    internal void GeneratePayoutLinesBackend(int index = -1, bool DestroyFirst = true)
+    {
+
+        if (DestroyFirst)
+            ResetStaticLine();
+
+        if (index >= 0)
+        {
+            Lines_Object[index].SetActive(true);
+            return;
+        }
+        DontDestroyLines.Clear();
+        for (int i = 0; i < LineList[currentLineIndex]; i++)
+        {
+            Lines_Object[i].SetActive(true);
+
+
+        }
+
+
+    }
+
+    internal void ToggleLine()
+    {
+        print("line current index " + currentLineIndex);
+        currentLineIndex++;
+        if (currentLineIndex == LineList.Count)
+        {
+            currentLineIndex = 0;
+        }
+        line_text.text = LineList[currentLineIndex].ToString();
+        DontDestroyLines.Clear();
+        ResetStaticLine();
+        GeneratePayoutLinesBackend(-1);
+        SetButtonActive(LineList[currentLineIndex]);
+
+    }
+
     internal void ResetStaticLine()
     {
-        if (TempObj != null)
+        for (int i = 0; i < Lines_Object.Length; i++)
         {
-            TempObj.SetActive(false);
-            TempObj = null;
+            if (DontDestroyLines.Contains(i))
+                continue;
+            else
+                Lines_Object[i].SetActive(false);
+        }
+    }
+
+    internal void SetButtonActive(int LineCounter)
+    {
+       
+
+        for (int i = 0; i < LineCounter; i++)
+        {
+            Lines_Object[i].SetActive(true);
+
+            buttons[i].interactable = true;
+        }
+
+
+        for (int j = LineCounter; j < buttons.Length; j++)
+        {
+            buttons[j].interactable = false;
         }
     }
 

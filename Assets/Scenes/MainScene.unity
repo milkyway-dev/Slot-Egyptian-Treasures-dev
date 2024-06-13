@@ -6490,6 +6490,7 @@ GameObject:
   m_Component:
   - component: {fileID: 500036491}
   - component: {fileID: 500036492}
+  - component: {fileID: 500036493}
   m_Layer: 0
   m_Name: SocketManager
   m_TagString: Untagged
@@ -6526,6 +6527,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotManager: {fileID: 2046803210}
   bonusdata: []
+  _jsManager: {fileID: 500036493}
+  SocketURI: https://game-rtp-backend-w7g7.onrender.com
+  testToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdhdXJhdiIsImRlc2lnbmF0aW9uIjoiY29tcGFueSIsImlhdCI6MTcxODI2MDAyMSwiZXhwIjoxNzE4MzQ2NDIxfQ.oqTSNmq-vDXm180y6bpA5Kalt8GSOootBXhG9wr9QLA
+--- !u!114 &500036493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500036490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93ebd9f5c201749cbbd9553f4b3a076a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &502968745
 GameObject:
   m_ObjectHideFlags: 0
@@ -12861,49 +12877,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1120d16b8ea7b4136b4f76b1cac17e2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gamble_game: {fileID: 6429498731712864959}
-  gambleButton: {fileID: 2104007838}
-  socketManager: {fileID: 500036492}
-  audioController: {fileID: 4327319551677706936}
-  allcards:
-  - {fileID: 6930220355004230832}
-  - {fileID: 4807510501218173390}
-  - {fileID: 4016549544591285088}
-  winamount: {fileID: 3966360465930114422}
-  total_winAmount: {fileID: 576684260}
-  slotController: {fileID: 2046803210}
-  cardSpriteList:
-  - {fileID: 21300000, guid: 9fbd8c1b16fc746818773c244fb32769, type: 3}
-  - {fileID: 21300000, guid: 9b0ac386387d840d38b940aef640ec5d, type: 3}
-  - {fileID: 21300000, guid: 7dfeca65b3cc04e758f7791b469d3dce, type: 3}
-  - {fileID: 21300000, guid: a241b783b7c304a0ab85c5adde42024a, type: 3}
-  - {fileID: 21300000, guid: 3f13258dfce4341a7af13b6e8e5939ae, type: 3}
-  - {fileID: 21300000, guid: ce57d68afdc4a47ba9f51ca223942970, type: 3}
-  - {fileID: 21300000, guid: 8fbe73316ea2c46c1b21d6b9632f075e, type: 3}
-  - {fileID: 21300000, guid: 1eea88665083d4143a1a619406a4e80b, type: 3}
-  - {fileID: 21300000, guid: 83cef554a1c44455d870529be5d55e70, type: 3}
-  - {fileID: 21300000, guid: d4234923b8dad42968353d1298aff221, type: 3}
-  - {fileID: 21300000, guid: 6e7c93f71963b41fda2d27f20007b353, type: 3}
-  - {fileID: 21300000, guid: 2be9b1c628aca4b4c875198bb7393144, type: 3}
-  - {fileID: 21300000, guid: 0f224c574f2d24c7fb8e9144b66ddf42, type: 3}
-  - {fileID: 21300000, guid: 52883ed0c237a4ce0bd58cde51d71da9, type: 3}
-  - {fileID: 21300000, guid: 11cc69fc0731446a2a85c3559a98719d, type: 3}
-  - {fileID: 21300000, guid: 7bccad19e7c69434aa6c8844aaeac922, type: 3}
-  - {fileID: 21300000, guid: 807d97cfd9cc04e9fa901ab2c97b666a, type: 3}
-  - {fileID: 21300000, guid: b418546887f6d43149a22ddfbadd1b68, type: 3}
-  - {fileID: 21300000, guid: e506a199129ac4eb2968baa6f345257b, type: 3}
-  - {fileID: 21300000, guid: 2c28c801cad244e5c8392e28f40cea63, type: 3}
-  - {fileID: 21300000, guid: 46986ebc9c6854fadaee29d3a21d5d32, type: 3}
-  - {fileID: 21300000, guid: f9ceee6d75593434d83f90e605a7cf15, type: 3}
-  - {fileID: 21300000, guid: c2272b127c0924192ada2a57c4cb76ee, type: 3}
-  - {fileID: 21300000, guid: af990cc4b107d47d3bddffe7cc8d55b0, type: 3}
-  - {fileID: 21300000, guid: eb9d6f581020647c2b90445e3bf795bc, type: 3}
-  - {fileID: 21300000, guid: aa707736ee8204eb0974702bb601c8c2, type: 3}
-  cardCover: {fileID: 21300000, guid: e2db62992d7c94280843abd1d3172253, type: 3}
-  tempSpriteList: []
-  DealerCard: {fileID: 2603850958917507143}
-  loadingScreen: {fileID: 6726325893577133609}
-  slider: {fileID: 6757861318803147646}
 --- !u!4 &983372824
 Transform:
   m_ObjectHideFlags: 0
@@ -29877,9 +29850,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6d88ed3611944ec9ebbd96f36f19e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardImage: {fileID: 21300000, guid: eb9d6f581020647c2b90445e3bf795bc, type: 3}
-  Card_Button: {fileID: 2694321788290375216}
-  gambleController: {fileID: 983372823}
 --- !u!222 &4154257758168406430
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -30055,9 +30025,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6d88ed3611944ec9ebbd96f36f19e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardImage: {fileID: 21300000, guid: ac1a549ce8e1b45b9ba01684a4fadd12, type: 3}
-  Card_Button: {fileID: 1955925443101539630}
-  gambleController: {fileID: 983372823}
 --- !u!4 &4885625708411774476
 Transform:
   m_ObjectHideFlags: 0
@@ -30265,9 +30232,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6d88ed3611944ec9ebbd96f36f19e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardImage: {fileID: 21300000, guid: 3f13258dfce4341a7af13b6e8e5939ae, type: 3}
-  Card_Button: {fileID: 8289323424160080929}
-  gambleController: {fileID: 983372823}
 --- !u!114 &7001139061590677638
 MonoBehaviour:
   m_ObjectHideFlags: 0

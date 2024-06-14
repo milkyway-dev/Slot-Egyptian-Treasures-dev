@@ -481,6 +481,10 @@
       <HintPath>Library/PackageCache/com.unity.visualscripting@1.9.2/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library/PackageCache/com.unity.nuget.newtonsoft-json@3.2.1/Runtime/Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">
       <HintPath>Library/PackageCache/com.unity.visualscripting@1.9.2/Editor/VisualScripting.Core/EditorAssetResources/Unity.VisualScripting.TextureAssets.dll</HintPath>
       <Private>False</Private>
@@ -1181,6 +1185,10 @@
       <HintPath>Library/ScriptAssemblies/Unity.2D.Animation.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.Profiling.Core">
+      <HintPath>Library/ScriptAssemblies/Unity.Profiling.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.2D.IK.Editor">
       <HintPath>Library/ScriptAssemblies/Unity.2D.IK.Editor.dll</HintPath>
       <Private>False</Private>
@@ -1195,9 +1203,17 @@
       <Project>{CE4ED1C9-8763-CE33-7818-64C96A774F88}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="BestHTTP.csproj">
-      <Project>{38AEE2F7-DA79-882D-FDD8-6918E72E858A}</Project>
-      <Name>BestHTTP</Name>
+    <ProjectReference Include="com.Tivadar.Best.SocketIO.csproj">
+      <Project>{E2B498B1-CA3C-824C-4AB7-8879108A9081}</Project>
+      <Name>com.Tivadar.Best.SocketIO</Name>
+    </ProjectReference>
+    <ProjectReference Include="com.Tivadar.Best.HTTP.csproj">
+      <Project>{EE525A87-84E6-1D68-251F-5FF848B5419F}</Project>
+      <Name>com.Tivadar.Best.HTTP</Name>
+    </ProjectReference>
+    <ProjectReference Include="com.Tivadar.Best.WebSockets.csproj">
+      <Project>{580EE1F6-E7D5-90D6-AC06-E949B6E1C70E}</Project>
+      <Name>com.Tivadar.Best.WebSockets</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)/Microsoft.CSharp.targets" />

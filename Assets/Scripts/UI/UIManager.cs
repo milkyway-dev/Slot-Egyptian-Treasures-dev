@@ -154,46 +154,43 @@ public class UIManager : MonoBehaviour
             if (Pagination_Text) Pagination_Text.text = paginationCounter + "  3";
         }
     }
-    internal void InitialiseUIData(string SupportUrl, string AbtImgUrl, string TermsUrl, string PrivacyUrl, Paylines symbolsText, List<string> Specialsymbols)
+    internal void InitialiseUIData(string SupportUrl, string AbtImgUrl, string TermsUrl, string PrivacyUrl, Paylines symbolsText)
     {
         PopulateSymbolsPayout(symbolsText);
-        PopulateSpecialSymbols(Specialsymbols);
     }
 
-    private void PopulateSpecialSymbols(List<string> Specialtext)
+    internal void LowBalPopup()
     {
-        for (int i = 0; i < SpecialSymbolsText.Length; i++)
-        {
-            if (SpecialSymbolsText[i]) SpecialSymbolsText[i].text = Specialtext[i];
-        }
+        //OpenPopup(LBPopup_Object);
     }
 
     private void PopulateSymbolsPayout(Paylines paylines)
     {
-        for (int i = 0; i < paylines.symbols.Count; i++)
+        for (int i = 0; i < SymbolsText.Length; i++)
         {
-            if (i < SymbolsText.Length)
+            string text = null;
+            if (paylines.symbols[i].Multiplier[0][0] != 0)
             {
-                string text = null;
-                if (paylines.symbols[i].multiplier._5x != 0)
-                {
-                    text += "5x -"+paylines.symbols[i].multiplier._5x;
-                }
-                if (paylines.symbols[i].multiplier._4x != 0)
-                {
-                    text += "\n" +"4x -" +paylines.symbols[i].multiplier._4x;
-                }
-                if (paylines.symbols[i].multiplier._3x != 0)
-                {
-                    text += "\n" + "3x -"+paylines.symbols[i].multiplier._3x;
-                }
-                if (paylines.symbols[i].multiplier._2x != 0)
-                {
-                    text += "\n" + "2x -"+paylines.symbols[i].multiplier._2x;
-                }
-                if (SymbolsText[i]) SymbolsText[i].text = text;
+                text += "5x - " + paylines.symbols[i].Multiplier[0][0];
             }
+            if (paylines.symbols[i].Multiplier[1][0] != 0)
+            {
+                text += "\n4x - " + paylines.symbols[i].Multiplier[1][0];
+            }
+            if (paylines.symbols[i].Multiplier[2][0] != 0)
+            {
+                text += "\n3x - " + paylines.symbols[i].Multiplier[2][0];
+            }
+            if (SymbolsText[i]) SymbolsText[i].text = text;
         }
+
+        //for (int i = 0; i < paylines.symbols.Count; i++)
+        //{
+        //    if (paylines.symbols[i].Name.ToUpper() == "BONUS")
+        //    {
+        //        if (Bonus_Text) Bonus_Text.text = paylines.symbols[i].description.ToString();
+        //    }
+        //}
     }
 
     private void CallOnExitFunction()

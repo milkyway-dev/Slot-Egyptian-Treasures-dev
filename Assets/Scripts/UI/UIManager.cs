@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
-using System.Linq;
 using TMPro;
-using System;
 
 
 public class UIManager : MonoBehaviour
@@ -27,6 +23,10 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private TMP_Text Win_Text;
 
+    [Header("Sun Animation")]
+    [SerializeField]
+    private ImageAnimation Sun_Anim;
+
     [Header("Paytable Popup")]
     [SerializeField]
     private GameObject PaytablePopup_Object;
@@ -47,7 +47,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text[] SymbolsText;
     [SerializeField] private TMP_Text[] SpecialSymbolsText;
 
-    private bool isSOundOn=true;
+    private bool isSOundOn = true;
 
     [SerializeField] private AudioController audioController;
     [SerializeField] private SlotBehaviour slotBehaviour;
@@ -191,6 +191,16 @@ public class UIManager : MonoBehaviour
         //        if (Bonus_Text) Bonus_Text.text = paylines.symbols[i].description.ToString();
         //    }
         //}
+    }
+
+    internal void StartSunAnim()
+    {
+        if (Sun_Anim) Sun_Anim.StartAnimation();
+    }
+
+    internal void StopSunAnim()
+    {
+        if (Sun_Anim) Sun_Anim.StopAnimation();
     }
 
     private void CallOnExitFunction()

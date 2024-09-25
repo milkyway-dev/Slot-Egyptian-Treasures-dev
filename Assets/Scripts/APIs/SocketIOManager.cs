@@ -314,7 +314,7 @@ public class SocketIOManager : MonoBehaviour
 
     private void PopulateSlotSocket()
     {
-        //slotManager.shuffleInitialMatrix();
+        slotManager.shuffleInitialMatrix();
         slotManager.SetInitialUI();
 
         isLoaded = true;

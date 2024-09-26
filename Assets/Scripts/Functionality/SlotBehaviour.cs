@@ -23,6 +23,8 @@ public class SlotBehaviour : MonoBehaviour
     private List<SlotImage> Tempimages;     //class to store the result matrix
     [SerializeField]
     private List<BoxScript> TempBoxScripts;
+    [SerializeField]
+    private List<Sprite> Box_Sprites; 
 
     [Header("Slots Objects")]
     [SerializeField]
@@ -113,7 +115,6 @@ public class SlotBehaviour : MonoBehaviour
 
     [SerializeField]
     private List<ImageAnimation> TempList;  //stores the sprites whose animation is running at present 
-    private List<BoxScripting> TempBox;  
 
     [SerializeField]
     private int IconSizeFactor = 100;       //set this parameter according to the size of the icon and spacing
@@ -127,8 +128,8 @@ public class SlotBehaviour : MonoBehaviour
     private SocketIOManager SocketManager;
     [SerializeField]
     private UIManager uiManager;
-    //[SerializeField]
-    //private BonusController _bonusManager;
+    [SerializeField]
+    private BonusLevelCalculation _bonusManager;
 
     [SerializeField]
     private GameObject Gamble;
@@ -138,6 +139,7 @@ public class SlotBehaviour : MonoBehaviour
     Coroutine AutoSpinRoutine = null;
     Coroutine tweenroutine;
     Coroutine FreeSpinRoutine = null;
+    Coroutine BoxAnimRoutine = null;
     bool IsFreeSpin = false;
     bool IsAutoSpin = false;
     bool IsSpinning = false;
@@ -257,7 +259,7 @@ public class SlotBehaviour : MonoBehaviour
         }
     }
 
-    internal void SetInitialUI()
+    internal void SetInitialUI(List<string> BonusList)
     {
         BetCounter = 0;
         if (LineBet_text) LineBet_text.text = SocketManager.initialData.Bets[BetCounter].ToString("f2");
@@ -267,6 +269,7 @@ public class SlotBehaviour : MonoBehaviour
         currentBalance = SocketManager.playerdata.Balance;
         currentTotalBet = SocketManager.initialData.Bets[BetCounter] * Lines;
         uiManager.InitialiseUIData(SocketManager.initUIData.AbtLogo.link, SocketManager.initUIData.AbtLogo.logoSprite, SocketManager.initUIData.ToULink, SocketManager.initUIData.PopLink, SocketManager.initUIData.paylines);
+        _bonusManager.BonusinitialSetup(BonusList);
     }
 
     private void StopAutoSpin()
@@ -655,14 +658,14 @@ public class SlotBehaviour : MonoBehaviour
 
     internal void CheckBonusGame()
     {
-        //if (SocketManager.resultData.isBonus)
-        //{
-            //_bonusManager.GetBailCaseList(SocketManager.resultData.BonusResult);
-        //}
-        //else
-        //{
+        if (SocketManager.resultData.isBonus)
+        {
+            _bonusManager.startGame(SocketManager.resultData.BonusResult, currentBet);
+        }
+        else
+        {
             CheckPopups = false;
-        //}
+        }
     }
 
     void ToggleButtonGrp(bool toggle)
@@ -685,25 +688,34 @@ public class SlotBehaviour : MonoBehaviour
     private void StartGameAnimation(GameObject animObjects, BoxScripting boxscript)
     {
         ImageAnimation temp = animObjects.GetComponent<ImageAnimation>();
-        animObjects.transform.parent.GetChild(0).gameObject.SetActive(true);
         temp.StartAnimation();
         TempList.Add(temp);
-        TempBox.Add(boxscript);
         boxscript.isAnim = true;
     }
 
     //stop the icons animation
     private void StopGameAnimation()
     {
+        if (BoxAnimRoutine != null)
+        {
+            StopCoroutine(BoxAnimRoutine);
+            BoxAnimRoutine = null;
+        }
+        for (int i = 0; i < TempBoxScripts.Count; i++)
+        {
+            foreach (BoxScripting b in TempBoxScripts[i].boxScripts)
+            {
+                b.isAnim = false;
+                b.ResetBG();
+            }
+        }
         for (int i = 0; i < TempList.Count; i++)
         {
             TempList[i].StopAnimation();
-            TempList[i].transform.parent.GetChild(0).gameObject.SetActive(false);
         }
         TempList.Clear();
         TempList.TrimExcess();
     }
-
 
     private void CheckPayoutLineBackend(List<int> LineId, List<string> points_AnimString, double jackpot = 0)
     {
@@ -711,13 +723,6 @@ public class SlotBehaviour : MonoBehaviour
         if (LineId.Count > 0 || points_AnimString.Count > 0)
         {
             if (audioController) audioController.PlayWLAudio("win");
-
-
-            for (int i = 0; i < LineId.Count; i++)
-            {
-                PayCalculator.DontDestroyLines.Add(LineId[i]);
-                PayCalculator.GeneratePayoutLinesBackend(LineId[i]);
-            }
 
             if (jackpot > 0)
             {
@@ -754,8 +759,56 @@ public class SlotBehaviour : MonoBehaviour
         {
             if (audioController) audioController.StopWLAaudio();
         }
-        CheckSpinAudio = false;
 
+        if (LineId.Count > 0)
+        {
+            BoxAnimRoutine = StartCoroutine(BoxRoutine(LineId));
+        }
+
+        CheckSpinAudio = false;
+    }
+
+    private IEnumerator BoxRoutine(List<int> LineIDs)
+    {
+        while(true)
+        {
+            for (int i = 0; i < LineIDs.Count; i++)
+            {
+                PayCalculator.GeneratePayoutLinesBackend(LineIDs[i]);
+                PayCalculator.DontDestroyLines.Add(LineIDs[i]);
+                for (int s = 0; s < 5; s++)
+                {
+                    if (TempBoxScripts[s].boxScripts[SocketManager.LineData[LineIDs[i]][s]].isAnim)
+                    {
+                        TempBoxScripts[s].boxScripts[SocketManager.LineData[LineIDs[i]][s]].SetBG(Box_Sprites[LineIDs[i]]);
+                    }
+                }
+                if (LineIDs.Count < 2)
+                {
+                    yield break;
+                }
+                yield return new WaitForSeconds(2f);
+                for (int s = 0; s < 5; s++)
+                {
+                    if (TempBoxScripts[s].boxScripts[SocketManager.LineData[LineIDs[i]][s]].isAnim)
+                    {
+                        TempBoxScripts[s].boxScripts[SocketManager.LineData[LineIDs[i]][s]].ResetBG();
+                    }
+                }
+                PayCalculator.DontDestroyLines.Clear();
+                PayCalculator.DontDestroyLines.TrimExcess();
+                PayCalculator.ResetStaticLine();
+            }
+            for (int i = 0; i < LineIDs.Count; i++)
+            {
+                PayCalculator.GeneratePayoutLinesBackend(LineIDs[i]);
+                PayCalculator.DontDestroyLines.Add(LineIDs[i]);
+            }
+            yield return new WaitForSeconds(2f);
+            PayCalculator.DontDestroyLines.Clear();
+            PayCalculator.DontDestroyLines.TrimExcess();
+            PayCalculator.ResetStaticLine();
+        }
     }
 
     #region TweeningCode

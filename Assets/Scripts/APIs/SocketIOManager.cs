@@ -21,10 +21,8 @@ public class SocketIOManager : MonoBehaviour
     internal GameData resultData = null;
     internal PlayerData playerdata = null;
     internal Message myMessage = null;
+    internal List<List<int>> LineData = null;
     internal double GambleLimit = 0;
-
-    [SerializeField]
-    internal List<string> bonusdata = null;
 
     private SocketManager manager;
 
@@ -36,8 +34,8 @@ public class SocketIOManager : MonoBehaviour
     protected string gameID = "";
 
     protected string SocketURI = null;
-    //protected string TestSocketURI = "https://game-crm-rtp-backend.onrender.com/";
-    protected string TestSocketURI = "https://916smq0d-5001.inc1.devtunnels.ms/";
+    //protected string TestSocketURI = "https://game-crm-rtp-backend.onrender.com/";        //dev port
+    protected string TestSocketURI = "https://916smq0d-5001.inc1.devtunnels.ms/";           //anushaka port
 
     internal bool isLoaded = false;
 
@@ -254,12 +252,12 @@ public class SocketIOManager : MonoBehaviour
                     initialData = myData.message.GameData;
                     initUIData = myData.message.UIData;
                     playerdata = myData.message.PlayerData;
-                    bonusdata = myData.message.BonusData;
                     GambleLimit = myData.message.maxGambleBet;
+                    LineData = myData.message.GameData.Lines;
 
                     if (!SetInit)
                     {
-                        PopulateSlotSocket();
+                        PopulateSlotSocket(myData.message.BonusData);
                         SetInit = true;
                     }
                     else
@@ -312,10 +310,10 @@ public class SocketIOManager : MonoBehaviour
         uiManager.InitialiseUIData(initUIData.AbtLogo.link, initUIData.AbtLogo.logoSprite, initUIData.ToULink, initUIData.PopLink, initUIData.paylines);
     }
 
-    private void PopulateSlotSocket()
+    private void PopulateSlotSocket(List<string> BonusList)
     {
         slotManager.shuffleInitialMatrix();
-        slotManager.SetInitialUI();
+        slotManager.SetInitialUI(BonusList);
 
         isLoaded = true;
         Application.ExternalCall("window.parent.postMessage", "OnEnter", "*");
@@ -482,6 +480,7 @@ public class GameData
     public bool canSwitchLines { get; set; }
     public List<int> LinesCount { get; set; }
     public List<int> autoSpin { get; set; }
+    public List<List<int>> Lines { get; set; }
     public List<List<string>> ResultReel { get; set; }
     public List<int> linesToEmit { get; set; }
     public List<List<string>> symbolsToEmit { get; set; }

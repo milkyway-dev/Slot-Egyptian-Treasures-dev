@@ -22,14 +22,12 @@ public class PayoutCalculation : MonoBehaviour
     //generate lines at runtime accordingly
     internal void GeneratePayoutLinesBackend(int index = -1, bool DestroyFirst = true)
     {
-
         if (DestroyFirst)
             ResetStaticLine();
 
         if (index >= 0)
         {
             LineObjetcs[index].SetActive(true);
-            print("line object name" + LineObjetcs[index].name);
             return;
         }
         DontDestroyLines.Clear();

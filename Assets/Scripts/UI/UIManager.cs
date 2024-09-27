@@ -194,6 +194,7 @@ public class UIManager : MonoBehaviour
 
     private void StartPopupAnim(double amount)
     {
+        if (audioController) audioController.PlayWLAudio("megawin");
         int initAmount = 0;
         if (WinPopup_Object) WinPopup_Object.SetActive(true);
         if (MainPopup_Object) MainPopup_Object.SetActive(true);

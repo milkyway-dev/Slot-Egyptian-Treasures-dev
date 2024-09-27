@@ -76,7 +76,7 @@ public class AudioController : MonoBehaviour
             case "lose":
                 index = 2;
                 break;
-            case "spinStop":
+            case "megawin":
                 index = 3;
                 break;
         }
@@ -92,7 +92,7 @@ public class AudioController : MonoBehaviour
         int index = 0;
         switch (type)
         {
-            case "coconut":
+            case "rock":
                 index = 0;
                 break;
             case "card":

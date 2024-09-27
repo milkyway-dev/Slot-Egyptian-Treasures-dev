@@ -34,8 +34,8 @@ public class SocketIOManager : MonoBehaviour
     protected string gameID = "SL-EGT";
 
     protected string SocketURI = null;
-    //protected string TestSocketURI = "https://game-crm-rtp-backend.onrender.com/";        //dev port
-    protected string TestSocketURI = "https://916smq0d-5001.inc1.devtunnels.ms/";           //anushaka port
+    protected string TestSocketURI = "https://game-crm-rtp-backend.onrender.com/";        //dev port
+    //protected string TestSocketURI = "https://916smq0d-5001.inc1.devtunnels.ms/";           //anushaka port
 
     internal bool isLoaded = false;
 

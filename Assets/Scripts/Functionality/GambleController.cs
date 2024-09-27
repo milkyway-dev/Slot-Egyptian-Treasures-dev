@@ -51,7 +51,6 @@ public class GambleController : MonoBehaviour
     private Sprite spare2card_Sprite;
 
     private Tweener Gamble_Tween_Scale = null;
-    private Tweener Gamble_Tween_Move = null;
 
     private Vector3 m_Temp_GambleButton;
 
@@ -258,6 +257,7 @@ public class GambleController : MonoBehaviour
 
     internal void RunOnCollect()
     {
+        if (audioController) audioController.PlayBonusAudio("card");
         StartCoroutine(NewCollectRoutine());
     }
 

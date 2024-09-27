@@ -56,6 +56,10 @@ public class SlotBehaviour : MonoBehaviour
     private Button AutoStartPlus_Button;
     [SerializeField]
     private Button AutoStartMinus_Button;
+    [SerializeField]
+    private Button TBPlus_Button;
+    [SerializeField]
+    private Button TBMinus_Button;
 
     [Header("Animated Sprites")]
     [SerializeField]
@@ -122,9 +126,6 @@ public class SlotBehaviour : MonoBehaviour
     private int numberOfSlots = 5;          //number of columns
 
     [SerializeField]
-    int verticalVisibility = 3;
-
-    [SerializeField]
     private SocketIOManager SocketManager;
     [SerializeField]
     private UIManager uiManager;
@@ -176,11 +177,18 @@ public class SlotBehaviour : MonoBehaviour
         if (AutoStartMinus_Button) AutoStartMinus_Button.onClick.RemoveAllListeners();
         if (AutoStartMinus_Button) AutoStartMinus_Button.onClick.AddListener(delegate { ToggleAutoSpins(false); });
 
+        if (TBPlus_Button) TBPlus_Button.onClick.RemoveAllListeners();
+        if (TBPlus_Button) TBPlus_Button.onClick.AddListener(delegate { ToggleTotalBet(true); });
+
+        if (TBMinus_Button) TBMinus_Button.onClick.RemoveAllListeners();
+        if (TBMinus_Button) TBMinus_Button.onClick.AddListener(delegate { ToggleTotalBet(false); });
+
         tweenHeight = (15 * IconSizeFactor) - 280;
     }
 
     private void ToggleAutoSpins(bool isIncrement)
     {
+        if (audioController) audioController.PlayButtonAudio();
         if (isIncrement) 
         {
             if (AutoSpinCounter < AutoSpinsValue.Length - 1)
@@ -366,6 +374,37 @@ public class SlotBehaviour : MonoBehaviour
         CompareBalance();
     }
 
+    private void ToggleTotalBet(bool IncDec)
+    {
+        if (audioController) audioController.PlayButtonAudio();
+        if (IncDec)
+        {
+            if (BetCounter < SocketManager.initialData.Bets.Count - 1)
+            {
+                BetCounter++;
+            }
+            else
+            {
+                BetCounter = 0;
+            }
+        }
+        else
+        {
+            if (BetCounter > 0)
+            {
+                BetCounter--;
+            }
+            else
+            {
+                BetCounter = SocketManager.initialData.Bets.Count - 1;
+            }
+        }
+        if (LineBet_text) LineBet_text.text = SocketManager.initialData.Bets[BetCounter].ToString("f2");
+        if (TotalBet_text) TotalBet_text.text = (SocketManager.initialData.Bets[BetCounter] * Lines).ToString("f2");
+        currentTotalBet = SocketManager.initialData.Bets[BetCounter] * Lines;
+        CompareBalance();
+    }
+
     private void CompareBalance()
     {
         if (currentBalance < currentTotalBet)
@@ -378,6 +417,11 @@ public class SlotBehaviour : MonoBehaviour
         {
             if (AutoSpin_Button) AutoSpin_Button.interactable = true;
             if (SlotStart_Button) SlotStart_Button.interactable = true;
+            if (AutoSpinNum <= 0)
+            {
+                AutoStartMinus_Button.interactable = false;
+                AutoSpin_Button.interactable = false;
+            }
         }
     }
 

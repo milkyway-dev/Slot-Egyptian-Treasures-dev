@@ -49,6 +49,8 @@ public class BonusLevelCalculation : MonoBehaviour
     private int boxesOpened = 0;
     private float multiplier = 0;
     private double currentbet;
+    [SerializeField]
+    private AudioController audiocontroller;
 
     Coroutine SunRoutine = null;
 
@@ -112,6 +114,7 @@ public class BonusLevelCalculation : MonoBehaviour
 
     internal void startGame(List<int> result, double currenBet)
     {
+        if (audiocontroller) audiocontroller.SwitchBGSound(true);
         if (SunRoutine != null)
         {
             StopCoroutine(SunRoutine);
@@ -145,6 +148,7 @@ public class BonusLevelCalculation : MonoBehaviour
         if (Raycast_Object) Raycast_Object.SetActive(true);
         if (Prize_Columns[num]) Prize_Columns[num].GetComponent<ImageAnimation>().StartAnimation();
         if (Prize_Buttons[num]) Prize_Buttons[num].interactable = false;
+        if (audiocontroller) audiocontroller.PlayBonusAudio("rock");
         DOVirtual.DelayedCall(0.3f, () =>
         {
             OpenOtherBoxes(num);
@@ -166,6 +170,7 @@ public class BonusLevelCalculation : MonoBehaviour
             }
             else
             {
+                if (audiocontroller) audiocontroller.PlayBonusAudio("lose");
                 Prize_Columns[num].SetActive(true);
                 Prize_Columns[num].GetComponent<Image>().sprite = GameOverSPrite;
                 Prize_Texts[num].text = "Game Over";
@@ -310,6 +315,7 @@ public class BonusLevelCalculation : MonoBehaviour
         if (RightArr_Objects[arrowNum]) RightArr_Objects[arrowNum].SetActive(true);
         boxesOpened = 0;
         bonusGame.SetActive(false);
+        if (audiocontroller) audiocontroller.SwitchBGSound(false);
         if (SunRoutine != null)
         {
             StopCoroutine(SunRoutine);

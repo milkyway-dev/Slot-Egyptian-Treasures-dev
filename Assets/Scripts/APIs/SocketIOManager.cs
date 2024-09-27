@@ -31,7 +31,7 @@ public class SocketIOManager : MonoBehaviour
 
     internal bool isResultdone = false;
 
-    protected string gameID = "";
+    protected string gameID = "SL-EGT";
 
     protected string SocketURI = null;
     //protected string TestSocketURI = "https://game-crm-rtp-backend.onrender.com/";        //dev port

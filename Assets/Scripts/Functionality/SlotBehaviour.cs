@@ -570,7 +570,15 @@ public class SlotBehaviour : MonoBehaviour
         currentBet = SocketManager.initialData.Bets[BetCounter];
 
         yield return new WaitForSeconds(0.5f);
-        CheckBonusGame();
+
+        if (SocketManager.resultData.isBonus)
+        {
+            CheckBonusGame();
+        }
+        else
+        {
+            CheckWinPopups();
+        }
 
         yield return new WaitUntil(() => !CheckPopups);
         if (!IsAutoSpin)
@@ -589,6 +597,26 @@ public class SlotBehaviour : MonoBehaviour
             ActivateGamble();
             yield return new WaitForSeconds(2f);
             IsSpinning = false;
+        }
+    }
+
+    internal void CheckWinPopups()
+    {
+        if (SocketManager.resultData.WinAmout >= currentTotalBet * 10 && SocketManager.resultData.WinAmout < currentTotalBet * 15)
+        {
+            uiManager.PopulateWin(1, SocketManager.resultData.WinAmout);
+        }
+        else if (SocketManager.resultData.WinAmout >= currentTotalBet * 15 && SocketManager.resultData.WinAmout < currentTotalBet * 20)
+        {
+            uiManager.PopulateWin(2, SocketManager.resultData.WinAmout);
+        }
+        else if (SocketManager.resultData.WinAmout >= currentTotalBet * 20)
+        {
+            uiManager.PopulateWin(3, SocketManager.resultData.WinAmout);
+        }
+        else
+        {
+            CheckPopups = false;
         }
     }
 

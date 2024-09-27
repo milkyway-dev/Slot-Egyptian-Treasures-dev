@@ -67,6 +67,13 @@ public class BonusLevelCalculation : MonoBehaviour
         if (SunLogoNormal) SunLogoNormal.SetActive(true);
         if (SunLogoFadeOut) SunLogoFadeOut.SetActive(false);
         if (SunLogoFadeIn) SunLogoFadeIn.SetActive(false);
+
+        for (int i = 0; i < Prize_Buttons.Length; i++)
+        {
+            int j = i;
+            Prize_Buttons[i].onClick.RemoveAllListeners();
+            Prize_Buttons[i].onClick.AddListener(delegate { CheckBox(j); });
+        }
     }
 
     internal void BonusinitialSetup(List<string> bonusList)
@@ -128,11 +135,9 @@ public class BonusLevelCalculation : MonoBehaviour
         if (SunLogoNormal) SunLogoNormal.SetActive(true);
         if (SunLogoFadeOut) SunLogoFadeOut.SetActive(false);
         if (SunLogoFadeIn) SunLogoFadeIn.SetActive(false);
-
-
     }
 
-    public void CheckBox(int num)
+    private void CheckBox(int num)
     {
         if (!gameOn)
             return;
@@ -140,6 +145,10 @@ public class BonusLevelCalculation : MonoBehaviour
         if (Raycast_Object) Raycast_Object.SetActive(true);
         if (Prize_Columns[num]) Prize_Columns[num].GetComponent<ImageAnimation>().StartAnimation();
         if (Prize_Buttons[num]) Prize_Buttons[num].interactable = false;
+        DOVirtual.DelayedCall(0.3f, () =>
+        {
+            OpenOtherBoxes(num);
+        });
         DOVirtual.DelayedCall(0.5f, () =>
         {
             int myResult = Platform_List[boxesOpened][result_num[boxesOpened]];
@@ -162,7 +171,6 @@ public class BonusLevelCalculation : MonoBehaviour
                 Prize_Texts[num].text = "Game Over";
             }
             boxesOpened++;
-
             if (myResult == 0 || boxesOpened >= 3) 
             {
                 gameOn = false;
@@ -170,7 +178,7 @@ public class BonusLevelCalculation : MonoBehaviour
                 {
                     item.interactable = false;
                 }
-                Invoke("GameOver", 1.75f);
+                Invoke("GameOver", 3f);
             }
             else
             {
@@ -193,6 +201,61 @@ public class BonusLevelCalculation : MonoBehaviour
             }
             if (Raycast_Object) Raycast_Object.SetActive(false);
         });
+    }
+
+    private void OpenOtherBoxes(int num)
+    {
+        int uppervalue = 0;
+        int lowervalue = 0;
+        switch (boxesOpened)
+        {
+            case 0:
+                uppervalue = 8;
+                lowervalue = 4;
+                break;
+            case 1:
+                uppervalue = 4;
+                lowervalue = 1;
+                break;
+            case 2:
+                uppervalue = 1;
+                lowervalue = -1;
+                break;
+        }
+
+        int k = 0;
+        for (int i = uppervalue; i > lowervalue; i--)
+        {
+            if (i != num)
+            {
+                if (Platform_List[boxesOpened][result_num[boxesOpened]] == Platform_List[boxesOpened][k])
+                {
+                    k++;
+                }
+                int myResult = Platform_List[boxesOpened][k];
+                if (Prize_Columns[i]) Prize_Columns[i].GetComponent<ImageAnimation>().StartAnimation();
+                if (Prize_Buttons[i]) Prize_Buttons[i].interactable = false;
+                StartCoroutine(TransitionBox(myResult, i));
+                k++;
+            }
+        }
+    }
+
+    private IEnumerator TransitionBox(int myResult, int i)
+    {
+        yield return new WaitForSeconds(0.5f);
+        if (myResult != 0)
+        {
+            if (Prize_Columns[i]) Prize_Columns[i].SetActive(false);
+            Prize_Texts[i].text = myResult.ToString();
+            Prize_Texts[i].gameObject.SetActive(true);
+        }
+        else
+        {
+            Prize_Columns[i].SetActive(true);
+            Prize_Columns[i].GetComponent<Image>().sprite = GameOverSPrite;
+            Prize_Texts[i].text = "Game Over";
+        }
     }
 
     private void NextLineUp(int line)
@@ -252,6 +315,6 @@ public class BonusLevelCalculation : MonoBehaviour
             StopCoroutine(SunRoutine);
             SunRoutine = null;
         }
-        slotBehaviour.CheckPopups = false;
+        slotBehaviour.CheckWinPopups();
     }
 }

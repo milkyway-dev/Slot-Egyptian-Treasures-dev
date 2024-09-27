@@ -161,38 +161,4 @@ public class AudioController : MonoBehaviour
         }
     }
 
-    internal void ChangeVolume(string type, float vol)
-    {
-        switch (type)
-        {
-            case "bg":
-
-                bg_adudio.mute = (vol == 0);
-                bg_adudio.volume = vol;
-                bg_audioBonus.mute = (vol == 0);
-                bg_audioBonus.volume = vol;
-                break;
-            case "button":
-                audioPlayer_button.mute = (vol == 0);
-                audioPlayer_button.volume = vol;
-                break;
-            case "wl":
-                audioPlayer_wl.mute = (vol == 0);
-                audioPlayer_wl.volume = vol;
-                audioPlayer_Bonus.mute = (vol == 0);
-                audioPlayer_Bonus.volume = vol;
-                break;
-            case "all":
-
-                audioPlayer_wl.mute = (vol == 0);
-                bg_adudio.mute = (vol == 0);
-                audioPlayer_button.mute = (vol == 0);
-                audioPlayer_wl.volume = vol;
-                bg_adudio.volume = vol;
-                audioPlayer_button.volume = vol;
-                break;
-        }
-
-    }
-
 }

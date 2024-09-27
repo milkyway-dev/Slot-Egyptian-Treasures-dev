@@ -143,8 +143,11 @@ public class BonusLevelCalculation : MonoBehaviour
     private void CheckBox(int num)
     {
         if (!gameOn)
+        {
             return;
+        }
 
+        Debug.Log("check game on " + num);
         if (Raycast_Object) Raycast_Object.SetActive(true);
         if (Prize_Columns[num]) Prize_Columns[num].GetComponent<ImageAnimation>().StartAnimation();
         if (Prize_Buttons[num]) Prize_Buttons[num].interactable = false;
@@ -161,7 +164,7 @@ public class BonusLevelCalculation : MonoBehaviour
                 if (Prize_Columns[num]) Prize_Columns[num].SetActive(false);
                 Prize_Texts[num].text = myResult.ToString();
                 Prize_Texts[num].gameObject.SetActive(true);
-                totalWinText.text = (int.Parse(totalWinText.text) + (currentbet * myResult)).ToString();
+                totalWinText.text = (double.Parse(totalWinText.text) + (currentbet * myResult)).ToString();
                 if (currentbet != 0)
                 {
                     multiplier += myResult;
@@ -176,7 +179,7 @@ public class BonusLevelCalculation : MonoBehaviour
                 Prize_Texts[num].text = "Game Over";
             }
             boxesOpened++;
-            if (myResult == 0 || boxesOpened >= 3) 
+            if (myResult == 0 || boxesOpened >= 3)
             {
                 gameOn = false;
                 foreach (var item in Prize_Buttons)

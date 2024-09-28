@@ -600,6 +600,7 @@ public class Symbol
     public object increaseValue { get; set; }
     public object description { get; set; }
     public int freeSpin { get; set; }
+    public object defaultPayout { get; set; }
 }
 
 [Serializable]

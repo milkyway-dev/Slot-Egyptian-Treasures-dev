@@ -748,6 +748,8 @@ public class SlotBehaviour : MonoBehaviour
         if (MaxBet_Button) MaxBet_Button.interactable = toggle;
         if (AutoSpin_Button) AutoSpin_Button.interactable = toggle;
         if (BetOne_button) BetOne_button.interactable = toggle;
+        if (TBPlus_Button) TBPlus_Button.interactable = toggle;
+        if (TBMinus_Button) TBMinus_Button.interactable = toggle;
     }
 
     internal void updateBalance()

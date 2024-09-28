@@ -47,6 +47,8 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Sprite MegaWin_Sprite;
     [SerializeField]
+    private Sprite Jackpot_Sprite;
+    [SerializeField]
     private Image Win_Image;
     [SerializeField]
     private GameObject WinPopup_Object;
@@ -187,6 +189,9 @@ public class UIManager : MonoBehaviour
             case 3:
                 if (Win_Image) Win_Image.sprite = MegaWin_Sprite;
                 break;
+            case 4:
+                if (Win_Image) Win_Image.sprite = Jackpot_Sprite;
+                break;
         }
 
         StartPopupAnim(amount);
@@ -303,20 +308,45 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 0; i < SymbolsText.Length; i++)
         {
-            string text = null;
-            if (paylines.symbols[i].Multiplier[0][0] != 0)
+            switch (paylines.symbols[i].Name)
             {
-                text += "5x - " + paylines.symbols[i].Multiplier[0][0];
+                case "0":
+                    string text = null;
+                    if (paylines.symbols[i].Multiplier[0][0] != 0)
+                    {
+                        text += "5x - " + paylines.symbols[i].Multiplier[0][0];
+                    }
+                    if (paylines.symbols[i].Multiplier[1][0] != 0)
+                    {
+                        text += "\n4x - " + paylines.symbols[i].Multiplier[1][0];
+                    }
+                    if (paylines.symbols[i].Multiplier[2][0] != 0)
+                    {
+                        text += "\n3x - " + paylines.symbols[i].Multiplier[2][0];
+                    }
+                    if (SymbolsText[0]) SymbolsText[0].text = text;
+                    if (SymbolsText[1]) SymbolsText[1].text = text;
+                    break;
+                case "4":
+                    text = null;
+                    if (paylines.symbols[i].Multiplier[0][0] != 0)
+                    {
+                        text += "5x - " + paylines.symbols[i].Multiplier[0][0];
+                    }
+                    if (paylines.symbols[i].Multiplier[1][0] != 0)
+                    {
+                        text += "\n4x - " + paylines.symbols[i].Multiplier[1][0];
+                    }
+                    if (paylines.symbols[i].Multiplier[2][0] != 0)
+                    {
+                        text += "\n3x - " + paylines.symbols[i].Multiplier[2][0];
+                    }
+                    if (SymbolsText[2]) SymbolsText[2].text = text;
+                    if (SymbolsText[3]) SymbolsText[3].text = text;
+                    if (SymbolsText[4]) SymbolsText[4].text = text;
+                    if (SymbolsText[5]) SymbolsText[5].text = text;
+                    break;
             }
-            if (paylines.symbols[i].Multiplier[1][0] != 0)
-            {
-                text += "\n4x - " + paylines.symbols[i].Multiplier[1][0];
-            }
-            if (paylines.symbols[i].Multiplier[2][0] != 0)
-            {
-                text += "\n3x - " + paylines.symbols[i].Multiplier[2][0];
-            }
-            if (SymbolsText[i]) SymbolsText[i].text = text;
         }
 
         for (int i = 0; i < paylines.symbols.Count; i++)
@@ -324,6 +354,10 @@ public class UIManager : MonoBehaviour
             if (paylines.symbols[i].Name.ToUpper() == "BONUS")
             {
                 if (BonusDesc_text) BonusDesc_text.text = paylines.symbols[i].description.ToString();
+            }
+            if (paylines.symbols[i].Name.ToUpper() == "JACKPOT")
+            {
+                if (SymbolsText[6]) SymbolsText[6].text = "Mega win triggered by 5 Jackpot symbols appearing anywhere on the result matrix. Payout: " + paylines.symbols[i].defaultPayout.ToString() + "x";
             }
         }
     }

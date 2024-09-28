@@ -615,6 +615,13 @@ public class SlotBehaviour : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
+        if (SocketManager.resultData.jackpot > 0)
+        {
+            uiManager.PopulateWin(4, SocketManager.resultData.jackpot);
+            yield return new WaitUntil(() => !CheckPopups);
+            CheckPopups = true;
+        }
+
         if (SocketManager.resultData.isBonus)
         {
             CheckBonusGame();

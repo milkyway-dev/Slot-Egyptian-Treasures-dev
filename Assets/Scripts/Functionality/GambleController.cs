@@ -56,6 +56,7 @@ public class GambleController : MonoBehaviour
 
     internal bool gambleStart = false;
     internal bool isResult = false;
+    internal int noOfAutoSpinRemaining;
 
     private void Start()
     {
@@ -78,16 +79,25 @@ public class GambleController : MonoBehaviour
     {
         if (slotController) slotController.GambleCollect();
         NormalCollectFunction();
+        if (noOfAutoSpinRemaining > 0)
+        {
+            slotController.AutoSpinNum = noOfAutoSpinRemaining;
+            slotController.AutoSpin();
+        }
     }
 
     void StartGamblegame(bool isRepeat = false)
     {
         if (GambleEnd_Object) GambleEnd_Object.SetActive(false);
+
+       
+
         GambleTweeningAnim(false);
         slotController.DeactivateGamble();
         if (!isRepeat)
         {
             winamount.text = "0";
+            noOfAutoSpinRemaining = slotController.AutoSpinNum;
         }
         if (audioController) audioController.PlayButtonAudio();
         if (gamble_game) gamble_game.SetActive(true);
@@ -316,6 +326,11 @@ public class GambleController : MonoBehaviour
         yield return new WaitForSeconds(2);
         slotController.updateBalance();
         if (gamble_game) gamble_game.SetActive(false);
+        if(noOfAutoSpinRemaining>0)
+        {
+            slotController.AutoSpinNum = noOfAutoSpinRemaining;
+            slotController.AutoSpin();
+        }
         allcards.ForEach((element) =>
         {
             element.Card_Button.image.sprite = cardCover;
@@ -325,6 +340,7 @@ public class GambleController : MonoBehaviour
         DealerCard_Script.Card_Button.image.sprite = cardCover;
         DealerCard_Script.once = false;
         toggleDoubleButton(false);
+        
 
     }
 
@@ -333,6 +349,7 @@ public class GambleController : MonoBehaviour
         gambleStart = false;
         slotController.updateBalance();
         if (gamble_game) gamble_game.SetActive(false);
+        
         allcards.ForEach((element) =>
         {
             element.Card_Button.image.sprite = cardCover;

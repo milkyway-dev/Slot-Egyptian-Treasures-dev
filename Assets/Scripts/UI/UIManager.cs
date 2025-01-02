@@ -54,6 +54,8 @@ public class UIManager : MonoBehaviour
     private GameObject WinPopup_Object;
     [SerializeField]
     private TMP_Text Win_Text;
+    [SerializeField]
+    private Button MegaWinHideBtn;
 
     [Header("Disconnection Popup")]
     [SerializeField]
@@ -162,6 +164,9 @@ public class UIManager : MonoBehaviour
 
         if (SoundImage) SoundImage.sprite = Enabled_Sprite;
         if (MusicImage) MusicImage.sprite = Enabled_Sprite;
+
+        if (MegaWinHideBtn) MegaWinHideBtn.onClick.RemoveAllListeners();
+        if (MegaWinHideBtn) MegaWinHideBtn.onClick.AddListener(OnClickMegaWinHide);
     }
 
     internal void LowBalPopup()
@@ -216,6 +221,11 @@ public class UIManager : MonoBehaviour
         });
     }
 
+    private void OnClickMegaWinHide()
+    {
+        ClosePopup(WinPopup_Object);
+        slotBehaviour.CheckPopups = false;
+    }
     private void OpenPopup(GameObject Popup)
     {
         if (audioController) audioController.PlayButtonAudio();

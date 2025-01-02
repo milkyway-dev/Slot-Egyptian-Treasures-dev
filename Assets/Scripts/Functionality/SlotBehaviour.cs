@@ -60,6 +60,8 @@ public class SlotBehaviour : MonoBehaviour
     private Button TBPlus_Button;
     [SerializeField]
     private Button TBMinus_Button;
+    [SerializeField] private Button StopSpin_Button;
+    [SerializeField] private Button Turbo_Button;
 
     [Header("Animated Sprites")]
     [SerializeField]
@@ -100,7 +102,7 @@ public class SlotBehaviour : MonoBehaviour
     private TMP_Text AutoSpin_Text;
     private int[] AutoSpinsValue = { 0, 5, 10, 25, 50, 100 };
     private int AutoSpinCounter = 0;
-    private int AutoSpinNum = 0;
+    internal int AutoSpinNum = 0;
 
     [Header("Audio Management")]
     [SerializeField] private AudioController audioController;
@@ -151,6 +153,11 @@ public class SlotBehaviour : MonoBehaviour
     private double currentTotalBet = 0;
     internal double currentBet = 0;
 
+    private bool StopSpinToggle;
+    private bool IsTurboOn;
+    private bool WasAutoSpinOn;
+    private Sprite turboOriginalSprite;
+
     protected int Lines = 20;
 
     private void Start()
@@ -182,6 +189,12 @@ public class SlotBehaviour : MonoBehaviour
 
         if (TBMinus_Button) TBMinus_Button.onClick.RemoveAllListeners();
         if (TBMinus_Button) TBMinus_Button.onClick.AddListener(delegate { ToggleTotalBet(false); });
+
+        if (StopSpin_Button) StopSpin_Button.onClick.RemoveAllListeners();
+        if (StopSpin_Button) StopSpin_Button.onClick.AddListener(() => { StopSpinToggle = true; StopSpin_Button.gameObject.SetActive(false); });
+
+        if (Turbo_Button) Turbo_Button.onClick.RemoveAllListeners();
+        if (Turbo_Button) Turbo_Button.onClick.AddListener(TurboToggle);
 
         tweenHeight = (15 * IconSizeFactor) - 280;
     }
@@ -224,7 +237,25 @@ public class SlotBehaviour : MonoBehaviour
         }
     }
 
-    private void AutoSpin()
+    void TurboToggle()
+    {
+        if (IsTurboOn)
+        {
+            IsTurboOn = false;
+          //  Turbo_Button.GetComponent<ImageAnimation>().StopAnimation();
+          //  Turbo_Button.image.sprite = turboOriginalSprite;
+            //Turbo_Button.image.sprite = TurboToggleSprites[0];
+            //Turbo_Button.image.color = new Color(0.86f, 0.86f, 0.86f, 1);
+        }
+        else
+        {
+            IsTurboOn = true;
+//            Turbo_Button.GetComponent<ImageAnimation>().StartAnimation();
+            //Turbo_Button.image.color = new Color(1, 1, 1, 1);
+        }
+    }   
+
+    internal void AutoSpin()
     {
         if (!IsAutoSpin)
         {
@@ -319,11 +350,19 @@ public class SlotBehaviour : MonoBehaviour
             yield return tweenroutine;
             i++;
         }
-        ToggleButtonGrp(true);
+       // ToggleButtonGrp(true);
         if (AutoSpinNum <= 0)
         {
             AutoStartMinus_Button.interactable = false;
             AutoSpin_Button.interactable = false;
+        }
+        if (WasAutoSpinOn)
+        {
+            AutoSpin();
+        }
+        else
+        {
+            ToggleButtonGrp(true);
         }
         IsFreeSpin = false;
     }
@@ -555,6 +594,12 @@ public class SlotBehaviour : MonoBehaviour
         CheckSpinAudio = true;
         IsSpinning = true;
         ToggleButtonGrp(false);
+
+        if (!IsTurboOn && !IsFreeSpin && !IsAutoSpin)
+        {
+            StopSpin_Button.gameObject.SetActive(true);
+        }
+
         for (int i = 0; i < numberOfSlots; i++)
         {
             InitializeTweening(Slot_Transform[i]);
@@ -567,6 +612,7 @@ public class SlotBehaviour : MonoBehaviour
         }
         SocketManager.AccumulateResult(BetCounter);
         yield return new WaitUntil(() => SocketManager.isResultdone);
+        yield return new WaitForSeconds(0.9f);
 
         for (int j = 0; j < SocketManager.resultData.ResultReel.Count; j++)
         {
@@ -578,14 +624,35 @@ public class SlotBehaviour : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(0.5f);
+        if (IsTurboOn || IsFreeSpin)                                                      // changes
+        {
+
+            yield return new WaitForSeconds(0.1f);
+        }
+        else
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                yield return new WaitForSeconds(0.1f);
+                if (StopSpinToggle)
+                {
+                    break;
+                }
+            }
+            StopSpin_Button.gameObject.SetActive(false);
+        }
+
 
         for (int i = 0; i < numberOfSlots; i++)
         {
-            yield return StopTweening(5, Slot_Transform[i], i);
+            yield return StopTweening(5, Slot_Transform[i], i,StopSpinToggle);
         }
 
-        yield return new WaitForSeconds(0.3f);
+        StopSpinToggle = false;
+
+        yield return alltweens[^1].WaitForCompletion();
+        // yield return new WaitForSeconds(0.3f);
+
         if (uiManager) uiManager.StopSunAnim();
 
         CheckPayoutLineBackend(SocketManager.resultData.linesToEmit, SocketManager.resultData.FinalsymbolsToEmit, SocketManager.resultData.jackpot);
@@ -635,7 +702,8 @@ public class SlotBehaviour : MonoBehaviour
         else
         {
             ActivateGamble();
-            yield return new WaitForSeconds(2f);
+            if (IsTurboOn) yield return new WaitForSeconds(1f);
+            else yield return new WaitForSeconds(2f);                                   // changes
             IsSpinning = false;
         }
     }
@@ -892,13 +960,22 @@ public class SlotBehaviour : MonoBehaviour
 
 
 
-    private IEnumerator StopTweening(int reqpos, Transform slotTransform, int index)
+    private IEnumerator StopTweening(int reqpos, Transform slotTransform, int index, bool isStop)
     {
         alltweens[index].Pause();
+
+        slotTransform.localPosition = new Vector2(slotTransform.localPosition.x, 0);
         int tweenpos = (reqpos * IconSizeFactor) - IconSizeFactor;
         alltweens[index] = slotTransform.DOLocalMoveY(-tweenpos + 100, 0.5f).SetEase(Ease.OutElastic);
 
-        yield return new WaitForSeconds(0.2f);
+        if (!isStop)
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+        else
+        {
+            yield return null;
+        }
     }
 
 

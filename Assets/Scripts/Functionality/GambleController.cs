@@ -57,6 +57,8 @@ public class GambleController : MonoBehaviour
     internal bool gambleStart = false;
     internal bool isResult = false;
     internal int noOfAutoSpinRemaining;
+    private bool OneCheck = false;
+    
 
     private void Start()
     {
@@ -79,9 +81,12 @@ public class GambleController : MonoBehaviour
     {
         if (slotController) slotController.GambleCollect();
         NormalCollectFunction();
-        if (noOfAutoSpinRemaining > 0)
+        Debug.Log("dev_test: " + "Autospin-----Called______OnReset"+ slotController.WasAutoSpinOn);
+        if (noOfAutoSpinRemaining > 0 && slotController.WasAutoSpinOn)
         {
             slotController.AutoSpinNum = noOfAutoSpinRemaining;
+          //  Debug.Log("dev_test: " + "Autospin-----Called______OnReset");
+
             slotController.AutoSpin();
         }
     }
@@ -97,7 +102,8 @@ public class GambleController : MonoBehaviour
         if (!isRepeat)
         {
             winamount.text = "0";
-            noOfAutoSpinRemaining = slotController.AutoSpinNum;
+            noOfAutoSpinRemaining = slotController.AutoSpinNum;           
+            OneCheck = true;
         }
         if (audioController) audioController.PlayButtonAudio();
         if (gamble_game) gamble_game.SetActive(true);
@@ -312,7 +318,7 @@ public class GambleController : MonoBehaviour
         }
         else
         {
-            winamount.text = "YOU LOSE" + "\n" + "0";
+            winamount.text = "YOU LOSE" + "\n" + "0";           
             StartCoroutine(Collectroutine());
         }
 
@@ -326,9 +332,11 @@ public class GambleController : MonoBehaviour
         yield return new WaitForSeconds(2);
         slotController.updateBalance();
         if (gamble_game) gamble_game.SetActive(false);
-        if(noOfAutoSpinRemaining>0)
+        Debug.Log("dev_test: " + "Autospin-----Called______OnReset" + slotController.WasAutoSpinOn);
+        if (noOfAutoSpinRemaining>0 && OneCheck && slotController.WasAutoSpinOn )
         {
-            slotController.AutoSpinNum = noOfAutoSpinRemaining;
+            OneCheck = false;
+            slotController.AutoSpinNum = noOfAutoSpinRemaining;           
             slotController.AutoSpin();
         }
         allcards.ForEach((element) =>

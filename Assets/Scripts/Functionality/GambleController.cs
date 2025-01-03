@@ -313,7 +313,7 @@ public class GambleController : MonoBehaviour
         if (DealerCard_Script) DealerCard_Script.FlipMyObject();
         if (socketManager.myMessage.playerWon)
         {
-            winamount.text = "YOU WIN" + "\n" + socketManager.myMessage.currentWining.ToString();
+            winamount.text = "YOU WIN" + "\n" + socketManager.myMessage.currentWining.ToString("f3");
             if (GambleEnd_Object) GambleEnd_Object.SetActive(true);
         }
         else

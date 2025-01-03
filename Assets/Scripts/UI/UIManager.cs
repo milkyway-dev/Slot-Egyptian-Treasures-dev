@@ -213,7 +213,7 @@ public class UIManager : MonoBehaviour
 
         TextTween = DOTween.To(() => initAmount, (val) => initAmount = val, (int)amount, 5f).OnUpdate(() =>
         {
-            if (Win_Text) Win_Text.text = initAmount.ToString();
+            if (Win_Text) Win_Text.text = initAmount.ToString("f3");
         });
 
        WinTween = DOVirtual.DelayedCall(6f, () =>

@@ -56,6 +56,9 @@ public class GambleController : MonoBehaviour
 
     internal bool gambleStart = false;
     internal bool isResult = false;
+    internal int noOfAutoSpinRemaining;
+    private bool OneCheck = false;
+    
 
     private void Start()
     {
@@ -78,16 +81,29 @@ public class GambleController : MonoBehaviour
     {
         if (slotController) slotController.GambleCollect();
         NormalCollectFunction();
+        Debug.Log("dev_test: " + "Autospin-----Called______OnReset"+ slotController.WasAutoSpinOn);
+        if (noOfAutoSpinRemaining > 0 && slotController.WasAutoSpinOn)
+        {
+            slotController.AutoSpinNum = noOfAutoSpinRemaining;
+          //  Debug.Log("dev_test: " + "Autospin-----Called______OnReset");
+
+            slotController.AutoSpin();
+        }
     }
 
     void StartGamblegame(bool isRepeat = false)
     {
         if (GambleEnd_Object) GambleEnd_Object.SetActive(false);
+
+       
+
         GambleTweeningAnim(false);
         slotController.DeactivateGamble();
         if (!isRepeat)
         {
             winamount.text = "0";
+            noOfAutoSpinRemaining = slotController.AutoSpinNum;           
+            OneCheck = true;
         }
         if (audioController) audioController.PlayButtonAudio();
         if (gamble_game) gamble_game.SetActive(true);
@@ -297,12 +313,12 @@ public class GambleController : MonoBehaviour
         if (DealerCard_Script) DealerCard_Script.FlipMyObject();
         if (socketManager.myMessage.playerWon)
         {
-            winamount.text = "YOU WIN" + "\n" + socketManager.myMessage.currentWining.ToString();
+            winamount.text = "YOU WIN" + "\n" + socketManager.myMessage.currentWining.ToString("f3");
             if (GambleEnd_Object) GambleEnd_Object.SetActive(true);
         }
         else
         {
-            winamount.text = "YOU LOSE" + "\n" + "0";
+            winamount.text = "YOU LOSE" + "\n" + "0";           
             StartCoroutine(Collectroutine());
         }
 
@@ -316,6 +332,13 @@ public class GambleController : MonoBehaviour
         yield return new WaitForSeconds(2);
         slotController.updateBalance();
         if (gamble_game) gamble_game.SetActive(false);
+        Debug.Log("dev_test: " + "Autospin-----Called______OnReset" + slotController.WasAutoSpinOn);
+        if (noOfAutoSpinRemaining>0 && OneCheck && slotController.WasAutoSpinOn )
+        {
+            OneCheck = false;
+            slotController.AutoSpinNum = noOfAutoSpinRemaining;           
+            slotController.AutoSpin();
+        }
         allcards.ForEach((element) =>
         {
             element.Card_Button.image.sprite = cardCover;
@@ -325,6 +348,7 @@ public class GambleController : MonoBehaviour
         DealerCard_Script.Card_Button.image.sprite = cardCover;
         DealerCard_Script.once = false;
         toggleDoubleButton(false);
+        
 
     }
 
@@ -333,6 +357,7 @@ public class GambleController : MonoBehaviour
         gambleStart = false;
         slotController.updateBalance();
         if (gamble_game) gamble_game.SetActive(false);
+        
         allcards.ForEach((element) =>
         {
             element.Card_Button.image.sprite = cardCover;

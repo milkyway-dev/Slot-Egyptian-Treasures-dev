@@ -54,6 +54,10 @@ public class UIManager : MonoBehaviour
     private GameObject WinPopup_Object;
     [SerializeField]
     private TMP_Text Win_Text;
+    [SerializeField]
+    private Button MegaWinHideBtn;
+    private Tween WinTween;
+    private Tween TextTween;
 
     [Header("Disconnection Popup")]
     [SerializeField]
@@ -162,6 +166,9 @@ public class UIManager : MonoBehaviour
 
         if (SoundImage) SoundImage.sprite = Enabled_Sprite;
         if (MusicImage) MusicImage.sprite = Enabled_Sprite;
+
+        if (MegaWinHideBtn) MegaWinHideBtn.onClick.RemoveAllListeners();
+        if (MegaWinHideBtn) MegaWinHideBtn.onClick.AddListener(OnClickMegaWinHide);
     }
 
     internal void LowBalPopup()
@@ -204,18 +211,26 @@ public class UIManager : MonoBehaviour
         if (WinPopup_Object) WinPopup_Object.SetActive(true);
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
 
-        DOTween.To(() => initAmount, (val) => initAmount = val, (int)amount, 5f).OnUpdate(() =>
+        TextTween = DOTween.To(() => initAmount, (val) => initAmount = val, (int)amount, 5f).OnUpdate(() =>
         {
-            if (Win_Text) Win_Text.text = initAmount.ToString();
+            if (Win_Text) Win_Text.text = initAmount.ToString("f3");
         });
 
-        DOVirtual.DelayedCall(6f, () =>
+       WinTween = DOVirtual.DelayedCall(6f, () =>
         {
             ClosePopup(WinPopup_Object);
             slotBehaviour.CheckPopups = false;
         });
     }
 
+    private void OnClickMegaWinHide()
+    {
+        TextTween?.Kill();
+        WinTween?.Kill();
+
+        ClosePopup(WinPopup_Object);
+        slotBehaviour.CheckPopups = false;
+    }
     private void OpenPopup(GameObject Popup)
     {
         if (audioController) audioController.PlayButtonAudio();
@@ -314,15 +329,15 @@ public class UIManager : MonoBehaviour
                     string text = null;
                     if (paylines.symbols[i].Multiplier[0][0] != 0)
                     {
-                        text += "5x - " + paylines.symbols[i].Multiplier[0][0];
+                        text += "5x - " + paylines.symbols[i].Multiplier[0][0]+"x";
                     }
                     if (paylines.symbols[i].Multiplier[1][0] != 0)
                     {
-                        text += "\n4x - " + paylines.symbols[i].Multiplier[1][0];
+                        text += "\n4x - " + paylines.symbols[i].Multiplier[1][0] + "x";
                     }
                     if (paylines.symbols[i].Multiplier[2][0] != 0)
                     {
-                        text += "\n3x - " + paylines.symbols[i].Multiplier[2][0];
+                        text += "\n3x - " + paylines.symbols[i].Multiplier[2][0] + "x";
                     }
                     if (SymbolsText[0]) SymbolsText[0].text = text;
                     if (SymbolsText[1]) SymbolsText[1].text = text;
@@ -331,15 +346,15 @@ public class UIManager : MonoBehaviour
                     text = null;
                     if (paylines.symbols[i].Multiplier[0][0] != 0)
                     {
-                        text += "5x - " + paylines.symbols[i].Multiplier[0][0];
+                        text += "5x - " + paylines.symbols[i].Multiplier[0][0] + "x";
                     }
                     if (paylines.symbols[i].Multiplier[1][0] != 0)
                     {
-                        text += "\n4x - " + paylines.symbols[i].Multiplier[1][0];
+                        text += "\n4x - " + paylines.symbols[i].Multiplier[1][0] + "x";
                     }
                     if (paylines.symbols[i].Multiplier[2][0] != 0)
                     {
-                        text += "\n3x - " + paylines.symbols[i].Multiplier[2][0];
+                        text += "\n3x - " + paylines.symbols[i].Multiplier[2][0] + "x";
                     }
                     if (SymbolsText[2]) SymbolsText[2].text = text;
                     if (SymbolsText[3]) SymbolsText[3].text = text;

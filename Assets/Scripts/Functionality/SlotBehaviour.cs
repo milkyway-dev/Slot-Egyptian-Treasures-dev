@@ -178,7 +178,7 @@ public class SlotBehaviour : MonoBehaviour
         if (AutoSpin_Button) AutoSpin_Button.onClick.AddListener(AutoSpin);
 
         if (AutoSpinStop_Button) AutoSpinStop_Button.onClick.RemoveAllListeners();
-        if (AutoSpinStop_Button) AutoSpinStop_Button.onClick.AddListener(StopAutoSpin);
+        if (AutoSpinStop_Button) AutoSpinStop_Button.onClick.AddListener(delegate {StopAutoSpin(); if (audioController) audioController.PlayButtonAudio();});
 
         if (AutoStartPlus_Button) AutoStartPlus_Button.onClick.RemoveAllListeners();
         if (AutoStartPlus_Button) AutoStartPlus_Button.onClick.AddListener(delegate { ToggleAutoSpins(true); });
@@ -193,10 +193,10 @@ public class SlotBehaviour : MonoBehaviour
         if (TBMinus_Button) TBMinus_Button.onClick.AddListener(delegate { ToggleTotalBet(false); });
 
         if (StopSpin_Button) StopSpin_Button.onClick.RemoveAllListeners();
-        if (StopSpin_Button) StopSpin_Button.onClick.AddListener(() => { StopSpinToggle = true; StopSpin_Button.gameObject.SetActive(false); });
+        if (StopSpin_Button) StopSpin_Button.onClick.AddListener(() => { StopSpinToggle = true; StopSpin_Button.gameObject.SetActive(false); if (audioController) audioController.PlayButtonAudio(); });
 
         if (Turbo_Button) Turbo_Button.onClick.RemoveAllListeners();
-        if (Turbo_Button) Turbo_Button.onClick.AddListener(TurboToggle);
+        if (Turbo_Button) Turbo_Button.onClick.AddListener(delegate { TurboToggle(); if (audioController) audioController.PlayButtonAudio();});
 
         tweenHeight = (15 * IconSizeFactor) - 280;
         turboOriginalSprite = Turbo_Button.GetComponent<Image>().sprite;
@@ -641,7 +641,7 @@ public class SlotBehaviour : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 yield return new WaitForSeconds(0.1f);
                 if (StopSpinToggle)

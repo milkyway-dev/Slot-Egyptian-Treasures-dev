@@ -206,12 +206,13 @@ public class UIManager : MonoBehaviour
 
     private void StartPopupAnim(double amount)
     {
+        CloseAllpopups();
         if (audioController) audioController.PlayWLAudio("megawin");
-        int initAmount = 0;
+        double initAmount = 0;
         if (WinPopup_Object) WinPopup_Object.SetActive(true);
         if (MainPopup_Object) MainPopup_Object.SetActive(true);
 
-        TextTween = DOTween.To(() => initAmount, (val) => initAmount = val, (int)amount, 5f).OnUpdate(() =>
+        TextTween = DOTween.To(() => initAmount, (val) => initAmount = val, amount, 5f).OnUpdate(() =>
         {
             if (Win_Text) Win_Text.text = initAmount.ToString("f3");
         });
@@ -247,7 +248,11 @@ public class UIManager : MonoBehaviour
             if (MainPopup_Object) MainPopup_Object.SetActive(false);
         }
     }
-
+    private void CloseAllpopups()
+    {
+        if (SettingsPopup_Object.activeSelf) ClosePopup(SettingsPopup_Object);
+        if (PaytablePopup_Object.activeSelf) ClosePopup(PaytablePopup_Object);
+    }
     private void ToggleMusic()
     {
         isMusic = !isMusic;

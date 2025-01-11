@@ -634,10 +634,11 @@ public class SlotBehaviour : MonoBehaviour
             }
         }
 
-        if (IsTurboOn || IsFreeSpin)                                                      // changes
+        if (IsTurboOn)                                                      // changes
         {
 
             yield return new WaitForSeconds(0.1f);
+            StopSpinToggle = true;
         }
         else
         {
@@ -664,7 +665,7 @@ public class SlotBehaviour : MonoBehaviour
         // yield return new WaitForSeconds(0.3f);
         if (SocketManager.playerdata.currentWining > 0)
         {
-            SpinDelay = 2f;
+            SpinDelay = 2f+(SocketManager.resultData.linesToEmit.Count - 3);
         }
         else
         {
@@ -947,7 +948,15 @@ public class SlotBehaviour : MonoBehaviour
                 {
                     yield break;
                 }
-                yield return new WaitForSeconds(2f);
+                if (IsAutoSpin)
+                {
+                    yield return new WaitForSeconds(1f);
+                }
+                else
+                {
+
+                    yield return new WaitForSeconds(3);
+                }
                 for (int s = 0; s < 5; s++)
                 {
                     if (TempBoxScripts[s].boxScripts[SocketManager.LineData[LineIDs[i]][s]].isAnim)
@@ -964,10 +973,20 @@ public class SlotBehaviour : MonoBehaviour
                 PayCalculator.GeneratePayoutLinesBackend(LineIDs[i]);
                 PayCalculator.DontDestroyLines.Add(LineIDs[i]);
             }
-            yield return new WaitForSeconds(2f);
+            if (IsAutoSpin)
+            {
+                yield return new WaitForSeconds(1f);
+            }
+            else
+            {
+
+                yield return new WaitForSeconds(3);
+            }
             PayCalculator.DontDestroyLines.Clear();
             PayCalculator.DontDestroyLines.TrimExcess();
             PayCalculator.ResetStaticLine();
+            yield return new WaitForSeconds(1f);
+           
         }
     }
 

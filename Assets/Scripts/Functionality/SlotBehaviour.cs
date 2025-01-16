@@ -335,7 +335,7 @@ public class SlotBehaviour : MonoBehaviour
             {
                 AutoSpinNum--;
                 if (AutoSpin_Text) AutoSpin_Text.text = AutoSpinNum.ToString();
-                Debug.Log("dev_test: " + "Autospin-----" + AutoSpinNum);
+               
                 WasAutoSpinOn = true;
                 StartSlots(IsAutoSpin);
                 yield return tweenroutine;
@@ -817,6 +817,7 @@ public class SlotBehaviour : MonoBehaviour
 
     internal void CheckBonusGame()
     {
+        Debug.Log("dev_test: " + "Bonus Game triggerd");
         if (SocketManager.resultData.isBonus)
         {
             _bonusManager.startGame(SocketManager.resultData.BonusResult, currentBet);

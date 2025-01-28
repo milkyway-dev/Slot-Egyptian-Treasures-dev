@@ -8277,6 +8277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cf5b797f5bc94c97bfd884a22652472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  socketmanager: {fileID: 500036492}
   Prize_Columns:
   - {fileID: 1551355467}
   - {fileID: 2070838918}
@@ -10115,7 +10116,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotManager: {fileID: 2046803210}
   uiManager: {fileID: 377874625}
-  testToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjU1MTA1MGJjMDc4ODcyMWUxYmEwMSIsInVzZXJuYW1lIjoiZGV2MDEiLCJyb2xlIjoicGxheWVyIiwiaWF0IjoxNzM2NTY4NTIyLCJleHAiOjE3MzcxNzMzMjJ9.3pVjYkACPPvAlr_SBJWdkXfNT1O2T-AVZkPTXqzND50
+  testToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjU1MTA1MGJjMDc4ODcyMWUxYmEwMSIsInVzZXJuYW1lIjoiZGV2MDEiLCJyb2xlIjoicGxheWVyIiwiaWF0IjoxNzM4MDQ1NTQ1LCJleHAiOjE3Mzg2NTAzNDV9.V82xK37aGmMdrRbZUemOFa-NYLWcvlf6tJVM3A_W3rU
 --- !u!1 &502968745
 GameObject:
   m_ObjectHideFlags: 0

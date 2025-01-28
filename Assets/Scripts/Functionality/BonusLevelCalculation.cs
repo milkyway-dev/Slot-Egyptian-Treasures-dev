@@ -9,6 +9,9 @@ using System.Linq;
 
 public class BonusLevelCalculation : MonoBehaviour
 {
+
+    [SerializeField] private SocketIOManager socketmanager;
+
     List<List<int>> Platform_List = new List<List<int>>()
     {
         new List<int>(), 
@@ -162,9 +165,10 @@ public class BonusLevelCalculation : MonoBehaviour
             if (myResult != 0)
             {
                 if (Prize_Columns[num]) Prize_Columns[num].SetActive(false);
-                Prize_Texts[num].text = myResult.ToString();
+                
+                Prize_Texts[num].text = (myResult*socketmanager.initialData.Bets[slotBehaviour.BetCounter]).ToString("f3");
                 Prize_Texts[num].gameObject.SetActive(true);
-                totalWinText.text = (double.Parse(totalWinText.text) + (currentbet * myResult)).ToString();
+                totalWinText.text = (double.Parse(totalWinText.text) + (currentbet * myResult)).ToString("f3");
                 if (currentbet != 0)
                 {
                     multiplier += myResult;
@@ -255,7 +259,7 @@ public class BonusLevelCalculation : MonoBehaviour
         if (myResult != 0)
         {
             if (Prize_Columns[i]) Prize_Columns[i].SetActive(false);
-            Prize_Texts[i].text = myResult.ToString();
+            Prize_Texts[i].text = (myResult * socketmanager.initialData.Bets[slotBehaviour.BetCounter]).ToString("f3");
             Prize_Texts[i].gameObject.SetActive(true);
         }
         else

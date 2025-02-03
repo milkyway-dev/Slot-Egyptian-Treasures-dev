@@ -30,7 +30,7 @@ public class SocketIOManager : MonoBehaviour
     private string testToken;
 
     internal bool isResultdone = false;
-
+        
    protected string gameID = "SL-EGT";
    // protected string gameID = "";
 
